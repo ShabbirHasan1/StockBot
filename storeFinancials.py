@@ -92,7 +92,7 @@ def main():
 	print 'Storing financials'
 	
 	#read list of all stock
-	df = utils.readExcel('stock-unique.xlsx.bkp')
+	df = utils.readExcel('stock-unique.xlsx')
 		
 	headers = {'authorization': "Basic API Key Ommitted", 'accept': "application/json", 'accept': "text/csv"}
 
