@@ -100,7 +100,7 @@ def main():
 	print 'Storing ratios'
 	
 	#read list of all stock
-	df = utils.readExcel('stock-unique.xlsx')
+	df = utils.readExcel('stock-unique-dummy.xlsx')
 		
 	headers = {'authorization': "Basic API Key Ommitted", 'accept': "application/json", 'accept': "text/csv"}
 

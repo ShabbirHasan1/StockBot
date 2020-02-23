@@ -3,6 +3,7 @@ import MovingAverage
 import os
 import logging
 import sell
+import buy
 import storeRatios
 import Median
 import ScoreBuyStocks
@@ -20,15 +21,22 @@ sched = BlockingScheduler()
 #	sell.main()
 #	print 'This job is run every weekday at 10:25 am.'
 
-@sched.scheduled_job('interval', minutes=60)
+
+
+@sched.scheduled_job('interval', minutes=10)
 def timed_job():
 	sell.main()
-	print('This job is run every sixty minutes.')
+	print('This job is run every ten minutes.')
 
-@sched.scheduled_job('cron', day_of_week='mon-sun', hour=12, minute=30)
-def scheduled_job3():
+@sched.scheduled_job('cron', day_of_week='mon-fri', hour=06, minute=00)
+def scheduled_job():
+	buy.main()
+	print('This job is run every weekday at 11:30 AM IST')
+	
+@sched.scheduled_job('cron', day_of_week='mon-sun', hour=12, minute=45)
+def scheduled_job1():
 	storeFinancials.main()
-	print 'This job is run every weekday at 18:00.'
+	print 'This job is run every weekday at 18:15.'
 
 #@sched.scheduled_job('cron', day_of_week='mon-fri', hour=13, minute=30)
 #def scheduled_job1():

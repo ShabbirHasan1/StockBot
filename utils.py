@@ -69,17 +69,23 @@ def saveToFile(itemList, filename):
 		for item in itemList:
 			print >> f, item
 
+def saveToFileItem(item, filename):
+	with open(filename, 'w') as f:
+		print >> f, item
+
 def readExcel(filename):
 	df = pd.read_excel(filename, sheet_name=0, keep_default_na=False) # can also index sheet by name or fetch all sheets
 	stockList = df
 	return df
 
 
-def readText(filename):
-	f = open(filename, 'r')
-	boughtList = f.readlines()
-	f.close()
-	return str(boughtList)
+def readText(fileName):
+	#f = open(filename, 'r')
+	#boughtList = f.readlines()
+	#f.close()
+	#return str(boughtList)
+	lineList = [line.rstrip('\n') for line in open(fileName)]
+	return lineList
 
 def deleteContent(fName):
     with open(fName, "w"):
@@ -181,3 +187,18 @@ def getAlertScore(stock):
 	except Exception as e:
 		print e
 	return scoreNews
+	
+def getBalance():
+	balances = readText('balance.txt')
+	balance = 0.0
+	for item in balances:
+		balance = item
+	return float(str(balance))
+	
+	
+def hasItem(text, file, column):
+	df  = readExcel(file)
+	for index, row in df.iterrows():
+		if str(row[column]) == text:
+			return True
+	return False

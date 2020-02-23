@@ -15,7 +15,7 @@ def write_to_csv(data, file):
 		for key, value in data.items():
 			writer.writerow([key, value])
 
-def write_to_csv2(file):
+def write_to_csv2(file, all_stock_codes):
 	with open(file, 'wb') as csv_file:
 		writer = csv.writer(csv_file)
 		writer.writerow(('id','shortname','mktcap','lastvalue','change','percentchange','direction','stk_details','volume','url'))
@@ -31,17 +31,18 @@ def write_to_csv2(file):
 					writer.writerow([row.get('id'), row.get('shortname'), row.get('mktcap'), row.get('lastvalue'), row.get('change'), row.get('percentchange'), row.get('direction'), row.get('stk_details'), row.get('volume'), row.get('url')])
 			
 
-#index_codes = nse.get_index_list()
+index_codes = nse.get_index_list()
 all_stock_codes = nse.get_stock_codes()
 #pprint(all_stock_codes)
 print "there are "+str(len(all_stock_codes))+ " codes"
+print index_codes
 #write_to_csv(all_stock_codes, 'data.csv')
 
 
 
 
 	
-write_to_csv2('stock.csv')
+write_to_csv2('stock.csv', all_stock_codes)
 
 
 

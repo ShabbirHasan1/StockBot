@@ -11,7 +11,9 @@ from my_dictionary import my_dictionary
 from notify_run import Notify
 import os
 import xlrd
+import order
 import utils
+from openpyxl import load_workbook
 
 
 def getAnnualReturn(currentPrice, purchasePrice, purchaseDate):
@@ -31,13 +33,34 @@ def shouldSell(currentPrice, purchasePrice, purchaseDate, quantity):
 	if getReturn(currentPrice, purchasePrice) > 1.05:
 		return 1
 	
-	#sell if annual return is less than 90%
-	if (purchasePrice - currentPrice > 5) and (getReturn(currentPrice, purchasePrice) < 0.9) and (currentPrice > 50.0):
-		return 1
-	
 	return 0
 	
-
+def sellAll(item, price, qty):
+	df  = utils.readExcel("boughtList.xlsx")
+	
+	#read balance from file
+	balance = utils.getBalance()
+	
+	row_data = [None] * 2
+	
+	status = order.place_order(item, "S", qty)
+	if status==1:
+		print 'Sell Item :'+item+' | Qty :'+ str(qty)+' | Sell :'+str(price)
+		newBalance = float(balance) + (price*qty)
+		utils.saveToFileItem(str(newBalance), 'balance.txt')
+		if item in utils.readText('buy.txt'):
+			#add to buywithcondition
+			wb = load_workbook("buyWithCondition.xlsx")
+			ws = wb.worksheets[0]
+			row_data = [None] * 2
+			row_data[0] = item
+			row_data[1] = price*.975
+			ws.append(row_data)
+			wb.save("buyWithCondition.xlsx")
+	
+	df = df[df['Name'] != item]
+	df.to_excel("boughtList.xlsx",sheet_name='Sheet1',index=False)
+	
 def main():
 	#main function
 	headers = {'authorization': "Basic API Key Ommitted", 'accept': "application/json", 'accept': "text/csv"}
@@ -51,12 +74,12 @@ def main():
 		rcomp = requests.get(url, headers=headers)
 		data = json.loads(rcomp.text)
 		currentPrice = float(data['graph']['current_close'])
-		if shouldSell(currentPrice, float(row['Price']), datetime.strptime(row['Date'], '%d %b %Y').date(), int(row['Qty'])) and (row['Name'] not in utils.readText('buy.txt')) and (row['Name'] not in utils.readText('sell.txt')):
+		if shouldSell(currentPrice, float(row['Price']), datetime.strptime(row['Date'], '%d %b %Y').date(), int(row['Qty'])):
 			sellList.append(row['Name'])
+			sellAll(str(row['Name']), currentPrice, int(row['Qty']))
 			
-	if len(sellList) is not 0:
-		utils.saveToFile(sellList, 'sell.txt')
-		utils.sendSMS('sell ', sellList)
+	#if len(sellList) is not 0:
+	#	utils.sendSMS('sell ', sellList)
 	
 	print 'sell '+str(sellList)
 	
