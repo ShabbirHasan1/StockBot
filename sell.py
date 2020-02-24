@@ -58,8 +58,8 @@ def sellAll(item, price, qty):
 			ws.append(row_data)
 			wb.save("buyWithCondition.xlsx")
 	
-	df = df[df['Name'] != item]
-	df.to_excel("boughtList.xlsx",sheet_name='Sheet1',index=False)
+		df = df[df['Name'] != item]
+		df.to_excel("boughtList.xlsx",sheet_name='Sheet1',index=False)
 	
 def main():
 	#main function
