@@ -28,7 +28,7 @@ def timed_job():
 	sell.main()
 	print('This job is run every ten minutes.')
 
-@sched.scheduled_job('cron', day_of_week='mon-sun', hour=13, minute=45)
+@sched.scheduled_job('cron', day_of_week='mon-sun', hour=11, minute=45)
 def scheduled_job1():
 	storeFinancials.main()
 	print 'This job is run every weekday at 19:15.'
