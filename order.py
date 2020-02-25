@@ -1,17 +1,18 @@
 import logging
 from kiteconnect import KiteConnect
 import utils
+import time
+import re
+import requests
+import urlparse
 logging.basicConfig(level=logging.DEBUG)
 
-kite = KiteConnect(api_key="6m485o0cpsicqsw7", access_token="s9MgMU4iPLCfAqlW0PgMrklhHliufUlh")
+#kite = KiteConnect(api_key="6m485o0cpsicqsw7")
 
-# Redirect the user to the login url obtained
-# from kite.login_url(), and receive the request_token
-# from the registered redirect url after the login flow.
-# Once you have the request_token, obtain the access_token
-# as follows.
+kite = KiteConnect(api_key="6m485o0cpsicqsw7", access_token="FTmbZTO3rmk3Sjls1ttPAC1vzgjGJEVT")
+#kite.renew_access_token("a30N8alKxnzUeEqjTh5XJAgBgIbV9kHH", "2h2k6kqpio3xyigxtlor49pcx1g6ofoo")
 
-#data = kite.generate_session("3w2mM9hA91h7XNGAyl8ooBrJxpOQQRKW", api_secret="2h2k6kqpio3xyigxtlor49pcx1g6ofoo")
+#data = kite.generate_session("TFZ4rBTYhVVoougQIpAvkO2ftu9BA2BY", api_secret="2h2k6kqpio3xyigxtlor49pcx1g6ofoo")
 #print data["access_token"]
 #kite.set_access_token(data["access_token"])
 
@@ -34,7 +35,7 @@ def place_order(stock, type, qty):
 	
 	# Place an order
 	try:
-		order_id = kite.place_order(tradingsymbol=symbol, exchange=kite.EXCHANGE_NSE,transaction_type=trans,quantity=qty,order_type=kite.ORDER_TYPE_MARKET,product=kite.PRODUCT_NRML, variety=kite.VARIETY_REGULAR)
+		order_id = kite.place_order(tradingsymbol=symbol, exchange=kite.EXCHANGE_NSE,transaction_type=trans,quantity=qty,order_type=kite.ORDER_TYPE_MARKET,product=kite.PRODUCT_CNC, variety=kite.VARIETY_REGULAR)
 	
 		logging.info("Order placed. ID is: {}".format(order_id))
 		logging.info("Order placed: {}".format(str(symbol) + " | "+str(type)+" | "+ str(qty)))
