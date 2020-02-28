@@ -10,3 +10,4 @@ xlsxwriter==1.2.4
 openpyxl==2.6.4
 email==4.0.2
 kiteconnect==3.8.2
+selenium==3.141.0

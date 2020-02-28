@@ -7,15 +7,9 @@ import requests
 import urlparse
 logging.basicConfig(level=logging.DEBUG)
 
-#kite = KiteConnect(api_key="6m485o0cpsicqsw7")
+token = utils.readText('access_token.txt')[0]
 
-kite = KiteConnect(api_key="6m485o0cpsicqsw7", access_token="FTmbZTO3rmk3Sjls1ttPAC1vzgjGJEVT")
-#kite.renew_access_token("a30N8alKxnzUeEqjTh5XJAgBgIbV9kHH", "2h2k6kqpio3xyigxtlor49pcx1g6ofoo")
-
-#data = kite.generate_session("4jjsuRaf6b6Skv2TO533NMzx5Ga0BtnT", api_secret="2h2k6kqpio3xyigxtlor49pcx1g6ofoo")
-#print data["access_token"]
-#kite.set_access_token(data["access_token"])
-
+kite = KiteConnect(api_key="6m485o0cpsicqsw7", access_token=token)
 
 def getMappedSymbol(stock):
 	df = utils.readExcel('stock-unique.xlsx')
