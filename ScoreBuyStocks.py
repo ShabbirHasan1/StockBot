@@ -17,12 +17,16 @@ import utils
 from openpyxl import load_workbook
 from collections import defaultdict
 from time import strptime
+import dbconnect
 
 #read list of all stock
 ratioFiles = ['Net Profit Margin(%)','Return on Assets Excluding Revaluations', 'Return On Net Worth(%)', 'Return On Capital Employed(%)', 'Total Income - Capital Employed(%)', 'Debt Equity Ratio']
 financials = ['Total Income From Operations', 'Net Profit/(Loss) For the Period']
-shareRatiodf = utils.readExcel('Ratios.xlsx')
-shareFinancialdf = utils.readExcel('Financials.xlsx')
+#shareRatiodf = utils.readExcel('Ratios.xlsx')
+shareRatiodf = dbconnect.read("`TABLE 2`")
+#shareFinancialdf = utils.readExcel('Financials.xlsx')
+shareFinancialdf = dbconnect.read("`TABLE 1`")
+
 PATdf = utils.readExcel('Net Profit Margin(%).xlsx')
 ROAdf = utils.readExcel('Return on Assets Excluding Revaluations.xlsx')
 ROWdf = utils.readExcel('Return On Net Worth(%).xlsx')

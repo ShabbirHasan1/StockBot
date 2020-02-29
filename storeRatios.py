@@ -14,6 +14,7 @@ import os
 import xlrd
 import xlsxwriter
 import utils
+import dbconnect
 from openpyxl import load_workbook
 
 
@@ -132,7 +133,7 @@ def main():
 			
 			for item in rData['company_data']['ratios']:
 			
-				row_data = [None] * 71
+				row_data = ["--"] * 71
 				row_data[0] = str(row['id'])
 				row_data[1] = str(row['Industry'])
 				row_data[2] = str(item['year'])
@@ -145,15 +146,15 @@ def main():
 						print str(ratio['name'])+':'+str(ratio['value'])
 					if index == 5:
 						row_data[index] = (ratio['value']).replace(',', '')
-						row_data[70] = float((ratio['value']).replace(',', '').replace('--','0'))*100/currentPrice
+						row_data[70] = round((float((ratio['value']).replace(',', '').replace('--','0'))*100/currentPrice), 2)
 					if index == 49:
-						row_data[index] = (ratio['value']).replace(',', '')
+						row_data[index] = str(ratio['value']).replace(',', '')
 						if str(ratio['value']) is not '--':
-							row_data[69] = currentPrice/float((ratio['value']).replace(',', ''))
+							row_data[69] = round(currentPrice/float((ratio['value']).replace(',', '')),2)
 						else: 
 							row_data[69] = '--'
 					else:
-						row_data[index] = (ratio['value']).replace(',', '')
+						row_data[index] = str(ratio['value']).replace(',', '')
 
 			
 				# Append Row Values

@@ -34,44 +34,44 @@ def getKey(ratio):
 		'Excise Duty ':15,
 		'Admin. And Selling Expenses ':16,
 		'R & D Expenses ':17,
-		'Provisions And Contingencies ':18,
-		'Provisions And Contingencies':18,
-		'Exp. Capitalised':19,
-		'Other Expenses':20,
-		'P/L Before Other Inc. , Int., Excpt. Items & Tax':21,
-		'Other Income':22,
-		'P/L Before Int., Excpt. Items & Tax':23,
-		'Interest':24,
-		'P/L Before Exceptional Items & Tax':25,
-		'Exceptional Items':26,
-		'P/L Before Tax':27,
-		'Tax':28,
-		'P/L After Tax from Ordinary Activities':29,
-		'P/L After Tax from Ordinary Activities ':29,
-		'Prior Year Adjustments ':30,
-		'Extra Ordinary Items':31,
-		'Net Profit/(Loss) For the Period':32,
-		'Equity Share Capital':33,
-		'Reserves Excluding Revaluation Reserves':34,
-		'Reserves Excluding Revaluation Reserves ':34,
-		'Equity Dividend Rate (%)':35,
-		'Basic EPS':36,
-		'Diluted EPS':37,
-		'EPS Before Extra Ordinary':38,
-		'EPS After Extra Ordinary':39,
-		'Public Share Holding':40,
-		'- Number of shares (Crores)':41,
-		'No Of Shares (Crores)':41,
-		'Share Holding (%)':42,
-		'Promoters and Promoter Group Shareholding':43,
-		'a) Pledged/Encumbered':44,
-		'Pledged/Encumbered':44,
-		'- Per. of shares (as a % of the total sh. of prom. and promoter group)':45,
-		'- Per. of shares (as a % of the total Share Cap. of the company)':46,
-		'- Per. of shares (as a % of the total sh. of prom. and promoter group)':47,
-		'- Per. of shares (as a % of the total Share Cap. of the company)':48,
-		'Return on Assets %':49,
-		'Operating Profit before Provisions and contingencies':50,
+		'Operating Profit before Provisions and contingencies':18,
+		'Provisions And Contingencies ':19,
+		'Provisions And Contingencies':19,
+		'Exp. Capitalised':20,
+		'Other Expenses':21,
+		'P/L Before Other Inc. , Int., Excpt. Items & Tax':22,
+		'Other Income':23,
+		'P/L Before Int., Excpt. Items & Tax':24,
+		'Interest':25,
+		'P/L Before Exceptional Items & Tax':26,
+		'Exceptional Items':27,
+		'P/L Before Tax':28,
+		'Tax':29,
+		'P/L After Tax from Ordinary Activities':30,
+		'P/L After Tax from Ordinary Activities ':30,
+		'Prior Year Adjustments ':31,
+		'Extra Ordinary Items':32,
+		'Net Profit/(Loss) For the Period':33,
+		'Equity Share Capital':34,
+		'Reserves Excluding Revaluation Reserves':35,
+		'Reserves Excluding Revaluation Reserves ':35,
+		'Equity Dividend Rate (%)':36,
+		'Basic EPS':37,
+		'Diluted EPS':38,
+		'EPS Before Extra Ordinary':39,
+		'EPS After Extra Ordinary':40,
+		'Public Share Holding':41,
+		'- Number of shares (Crores)':42,
+		'No Of Shares (Crores)':42,
+		'Share Holding (%)':43,
+		'Promoters and Promoter Group Shareholding':44,
+		'a) Pledged/Encumbered':45,
+		'Pledged/Encumbered':45,
+		'- Per. of shares (as a % of the total sh. of prom. and promoter group)':46,
+		'- Per. of shares (as a % of the total Share Cap. of the company)':47,
+		'- Per. of shares (as a % of the total sh. of prom. and promoter group)':48,
+		'- Per. of shares (as a % of the total Share Cap. of the company)':49,
+		'Return on Assets %':50,
 		'% of Share by Govt.':51,
 		'Capital Adequacy Ratio - Basel - II':52,
 		'Capital Adequacy Ratio - Basel -II':52,
@@ -98,7 +98,7 @@ def main():
 	headers = {'authorization': "Basic API Key Ommitted", 'accept': "application/json", 'accept': "text/csv"}
 
 	wb = load_workbook("Financials.xlsx")
-	wbHeaders = ['Share', 'Industry', 'Year', 'Month', 'Non-encumbered', 'Net Sales/Income from operations', 'Other Operating Income', 'Total Income From Operations', 'EXPENDITURE', 'Consumption of Raw Materials', 'Purchase of Traded Goods', 'Increase/Decrease in Stocks', 'Power & Fuel', 'Employees Cost', 'Depreciation', 'Excise Duty ', 'Admin. And Selling Expenses ', 'R & D Expenses ', 'Operating Profit before Provisions and contingencies','Provisions And Contingencies ', 'Exp. Capitalised', 'Other Expenses', 'P/L Before Other Inc. , Int., Excpt. Items & Tax', 'Other Income', 'P/L Before Int., Excpt. Items & Tax', 'Interest', 'P/L Before Exceptional Items & Tax', 'Exceptional Items', 'P/L Before Tax', 'Tax', 'P/L After Tax from Ordinary Activities', 'Prior Year Adjustments ', 'Extra Ordinary Items', 'Net Profit/(Loss) For the Period', 'Equity Share Capital', 'Reserves Excluding Revaluation Reserves', 'Equity Dividend Rate (%)', 'Basic EPS', 'Diluted EPS', 'EPS Before Extra Ordinary', 'EPS After Extra Ordinary', 'Number of shares (Crores)', 'Share Holding (%)', 'Public Share Holding', 'Promoters and Promoter Group Shareholding',  'a) Pledged/Encumbered' 'Pledged/Encumbered', '- Per. of shares (as a % of the total sh. of prom. and promoter group)', '- Per. of shares (as a % of the total Share Cap. of the company)', '- Per. of shares (as a % of the total sh. of prom. and promoter group)','- Per. of shares (as a % of the total Share Cap. of the company)','% of Share by Govt.','Capital Adequacy Ratio - Basel - II','Gross NPA','Net NPA', '% of Gross NPA','% of Net NPA', 'Return on Assets %', 'Int. /Disc. on Adv/Bills', 'Income on Investment', 'Int. on balances With RBI', 'Others', 'Interest Expended']
+	wbHeaders = ['Share', 'Industry', 'Year', 'Month', 'Non-encumbered', 'Net Sales/Income from operations', 'Other Operating Income', 'Total Income From Operations', 'EXPENDITURE', 'Consumption of Raw Materials', 'Purchase of Traded Goods', 'Increase/Decrease in Stocks', 'Power & Fuel', 'Employees Cost', 'Depreciation', 'Excise Duty ', 'Admin. And Selling Expenses ', 'R & D Expenses ', 'Operating Profit before Provisions and contingencies','Provisions And Contingencies ', 'Exp. Capitalised', 'Other Expenses', 'P/L Before Other Inc. , Int., Excpt. Items & Tax', 'Other Income', 'P/L Before Int., Excpt. Items & Tax', 'Interest', 'P/L Before Exceptional Items & Tax', 'Exceptional Items', 'P/L Before Tax', 'Tax', 'P/L After Tax from Ordinary Activities', 'Prior Year Adjustments ', 'Extra Ordinary Items', 'Net Profit/(Loss) For the Period', 'Equity Share Capital', 'Reserves Excluding Revaluation Reserves', 'Equity Dividend Rate (%)', 'Basic EPS', 'Diluted EPS', 'EPS Before Extra Ordinary', 'EPS After Extra Ordinary', 'Number of shares (Crores)', 'Share Holding (%)', 'Public Share Holding', 'Promoters and Promoter Group Shareholding',  'a) Pledged/Encumbered' 'Pledged/Encumbered', '- Per. of shares (as a % of prom. and promoter group)', '- Per. of shares (as a % of Share Cap. of the company)', '- Per. of shares (as a % of prom and promoter group)','- Per. of shares (as a % of Share Cap of the company)','% of Share by Govt.','Capital Adequacy Ratio - Basel - II','Gross NPA','Net NPA', '% of Gross NPA','% of Net NPA', 'Return on Assets %', 'Int. /Disc. on Adv/Bills', 'Income on Investment', 'Int. on balances With RBI', 'Others', 'Interest Expended']
 	
 	
 	# Select First Worksheet
@@ -119,7 +119,7 @@ def main():
 			print 'storing for '+str(row['id'])
 			for item in rData['company_data']['result']:
 			
-				row_data = [None] * 62
+				row_data = ["--"] * 62
 				row_data[0] = str(row['id'])
 				row_data[1] = str(row['Industry'])
 				row_data[2] = str(item['year'])
@@ -130,8 +130,10 @@ def main():
 					
 					if index == -1 and int(result['head_flag']) is not 1:
 						print str(result['name'])+':'+str(result['value'])
+					elif len(str(result['value'])) == 0:
+						row_data[index] = '--'
 					else:
-						row_data[index] = (result['value']).replace(',', '')
+						row_data[index] = str(result['value']).replace(',', '')
 
 			
 				# Append Row Values
@@ -141,8 +143,8 @@ def main():
 			print e
 
 		wb.save("Financials.xlsx")
-
-	
+		
+	dbconnect.close()
 if __name__ == "__main__":
     main()
 	

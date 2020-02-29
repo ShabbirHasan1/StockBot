@@ -14,7 +14,7 @@ import xlrd
 import xlsxwriter
 import utils
 from openpyxl import load_workbook
-
+import dbconnect
 
 
 def main():
@@ -25,7 +25,8 @@ def main():
 	ratioList = ['Net Profit Margin(%)','Return on Assets Excluding Revaluations', 'Return On Net Worth(%)', 'Return On Capital Employed(%)', 'Total Income / Capital Employed(%)', 'Dividend Yield', 'PE Ratio', 'Debt Equity Ratio']
 	count = 0
 	
-	df = utils.readExcel('Ratios.xlsx')
+	#df = utils.readExcel('Ratios.xlsx')
+	df = dbconnect.read("`TABLE 2`")
 	# Replace the column with the converted values
 	df['PE Ratio'] = pd.to_numeric(df['PE Ratio'], errors='coerce')
 	df['Net Profit Margin(%)'] = pd.to_numeric(df['Net Profit Margin(%)'], errors='coerce')
