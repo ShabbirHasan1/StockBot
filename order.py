@@ -45,6 +45,10 @@ def getInstruments():
 	# Get instruments
 	return kite.instruments()
 	
+def getHoldings():
+	# Get instruments
+	return kite.holdings()
+	
 
 # Place an mutual fund order
 #kite.place_mf_order(
