@@ -137,14 +137,14 @@ def main():
 
 			
 				# Append Row Values
-				dbconnect.upsert("`TABLE 1`", row_data)
+				#dbconnect.upsert("`TABLE 1`", row_data)
 				ws.append(row_data)
 		except Exception as e:
 			print e
 
 		wb.save("Financials.xlsx")
 		
-	dbconnect.close()
+	#dbconnect.close()
 if __name__ == "__main__":
     main()
 	

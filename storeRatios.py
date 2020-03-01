@@ -158,7 +158,7 @@ def main():
 
 			
 				# Append Row Values
-				dbconnect.upsert("`TABLE 2`", row_data)
+				#dbconnect.upsert("`TABLE 2`", row_data)
 				ws.append(row_data)
 		except Exception as e:
 			print e
