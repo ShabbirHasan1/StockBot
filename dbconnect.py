@@ -4,7 +4,7 @@ from mysql.connector import errorcode
 import pandas as pd
 #conn = MySQLdb.connect(host='fdb17.runhosting.com', user='sukrit.raghuvanshi1990', passwd='Crashing@1', db='3337075_stock')
 try:
-	conn = mysql.connector.connect(host='sql12.freemysqlhosting.net', user='sql12324946', password='JXdDfG3ZBD', database='sql12324946')
+	conn = mysql.connector.connect(host='sql12.freemysqlhosting.net', user='sql12324997', password='vFiJPaxjy6', database='sql12324997')
 except mysql.connector.Error as err:
 	if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
 		print("Something is wrong with your user name or password")

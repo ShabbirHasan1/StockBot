@@ -24,8 +24,8 @@ ratioFiles = ['Net Profit Margin(%)','Return on Assets Excluding Revaluations', 
 financials = ['Total Income From Operations', 'Net Profit/(Loss) For the Period']
 shareRatiodf = utils.readExcel('Ratios.xlsx')
 #shareRatiodf = dbconnect.read("`TABLE 2`")
-shareFinancialdf = utils.readExcel('Financials.xlsx')
-#shareFinancialdf = dbconnect.read("`TABLE 1`")
+#shareFinancialdf = utils.readExcel('Financials.xlsx')
+shareFinancialdf = dbconnect.read("`TABLE 1`")
 
 PATdf = utils.readExcel('Net Profit Margin(%).xlsx')
 ROAdf = utils.readExcel('Return on Assets Excluding Revaluations.xlsx')
