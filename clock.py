@@ -9,6 +9,7 @@ import Median
 import ScoreBuyStocks
 import storeFinancials
 import generate_token
+import holdings
 logging.basicConfig()
 
 sched = BlockingScheduler()
@@ -22,7 +23,10 @@ sched = BlockingScheduler()
 #	sell.main()
 #	print 'This job is run every weekday at 10:25 am.'
 
-
+@sched.scheduled_job('interval', minutes=60)
+def timed_job():
+	holdings.main()
+	print('This job is run every ten minutes.')
 
 @sched.scheduled_job('interval', minutes=10)
 def timed_job():
