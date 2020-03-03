@@ -7,7 +7,7 @@ import requests
 import urlparse
 logging.basicConfig(level=logging.DEBUG)
 
-token = utils.readText('access_token.txt')[0]
+token = str(utils.readText('access_token.txt')[0])
 
 kite = KiteConnect(api_key="6m485o0cpsicqsw7", access_token=token)
 
