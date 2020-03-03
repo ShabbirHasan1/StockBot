@@ -67,7 +67,7 @@ def main():
 
 	data = kite.generate_session(token, api_secret="2h2k6kqpio3xyigxtlor49pcx1g6ofoo")
 	print 'Saving token '+str(data["access_token"])
-	utils.saveToFileItem(data["access_token"], 'access_token.txt')
+	utils.saveToFileItem(str(data["access_token"]), 'access_token.txt')
 	#kite.set_access_token(data["access_token"])
 
 if __name__ == "__main__":
