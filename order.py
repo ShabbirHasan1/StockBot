@@ -5,9 +5,11 @@ import time
 import re
 import requests
 import urlparse
+import dbconnect
 logging.basicConfig(level=logging.DEBUG)
 
-token = str(utils.readText('access_token.txt')[0])
+#token = str(utils.readText('access_token.txt')[0])
+token = dbconnect.readItem('TOKEN', 'VALUE')
 
 kite = KiteConnect(api_key="6m485o0cpsicqsw7", access_token=token)
 
@@ -33,7 +35,7 @@ def place_order(stock, type, qty):
 	
 		logging.info("Order placed. ID is: {}".format(order_id))
 		logging.info("Order placed: {}".format(str(symbol) + " | "+str(type)+" | "+ str(qty)))
-		#print 'order placed'
+		print 'order placed'
 		return 1
 	except Exception as e:
 		logging.info("Order placement failed: {}".format(e.message))

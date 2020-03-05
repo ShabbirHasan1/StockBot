@@ -14,14 +14,16 @@ import os
 import xlrd
 import utils
 import order
+import dbconnect
 
 MAX_BALANCE = 20000
 
 
 def removeFromCondition(item):
-	df  = utils.readExcel("buywithcondition.xlsx")
-	df = df[df['Stock'] != item]
-	df.to_excel("buyWithCondition.xlsx",sheet_name='Sheet1',index=False)
+	dbconnect.delete('CONDITION_BUY', 'STOCK', item)
+	#df  = utils.readExcel("buywithcondition.xlsx")
+	#df = df[df['Stock'] != item]
+	#df.to_excel("buyWithCondition.xlsx",sheet_name='Sheet1',index=False)
 	
 
 def getQty(price):
@@ -40,33 +42,37 @@ def getPrice(item):
 def buyItem(item, qty, price):
 	if utils.getBalance() > 0:
 		print 'Buying item'
-		wb = load_workbook("boughtList.xlsx")
-		ws = wb.worksheets[0]
-		row_data = [None] * 4
-		row_data[0] = item
-		row_data[1] = price
-		row_data[2] = date.today().strftime('%d %b %Y')
-		row_data[3] = qty
+		#wb = load_workbook("boughtList.xlsx")
+		#ws = wb.worksheets[0]
+		row_data = [None] * 5
+		row_data[0] = '1'
+		row_data[1] = str(item)
+		row_data[2] = price
+		row_data[3] = date.today().strftime('%d %b %Y')
+		row_data[4] = qty
 		
 		status = order.place_order(item, "B", qty)
 		if status == 1:
 			print 'Buy Item :'+item+' | Qty :'+str(qty)+' | Purchase :'+ str(price)
 			balance = utils.getBalance()
 			balance = balance - (price*qty)
-			utils.saveToFileItem(str(balance), 'balance.txt')
+			dbconnect.upsert("BALANCE", ('1', str(balance)) )
+			#utils.saveToFileItem(str(balance), 'balance.txt')
 			if qty > 0:
-				ws.append(row_data)
-				wb.save("boughtList.xlsx")
+				#ws.append(row_data)
+				#wb.save("boughtList.xlsx")
+				dbconnect.upsert("BOUGHT_LIST", row_data)
 			return 1
 	return 0
 
 def checkCondition(item):
-	df  = utils.readExcel("buyWithCondition.xlsx")
+	#df  = utils.readExcel("buyWithCondition.xlsx")
+	df = dbconnect.read('CONDITION_BUY')
 	for index, row in df.iterrows():
-		if str(row['Stock']) == item:
+		if str(row['STOCK']) == item:
 			currentPrice = getPrice(item)
 			print 'checking price'
-			if currentPrice < float(row['Cprice']):
+			if currentPrice < float(row['CPRICE']):
 				if (buyItem(item, getQty(currentPrice), currentPrice)):
 					removeFromCondition(item)
 			return 1
@@ -77,20 +83,27 @@ def checkCondition(item):
 # 2) The stock status is buy, stock is not in buy in buywithcondition excel
 # 3) Don't buy if stock is already in the boughtList
 def main():
-	buyList = utils.readText('buy.txt')
-	for item in buyList:
+	#buyList = utils.readText('buy.txt')
+	buyDf = dbconnect.read("BUY")
+	temp_list = []
+	for index, row in buyDf.iterrows():
+		if index == 0:
+			temp_list = [row.ITEM1, row.ITEM2, row.ITEM3, row.ITEM4, row.ITEM5]
+	for item in temp_list:
 		currentPrice = getPrice(item)
-		if utils.hasItem(item, "boughtList.xlsx", 'Name'):
+		if dbconnect.hasItem(item, "BOUGHT_LIST", 'NAME'):
 			continue
 		elif checkCondition(item) == 0:
 			buyItem(item, getQty(currentPrice), currentPrice)
 			
-	df  = utils.readExcel("buyWithCondition.xlsx")
+	#df  = utils.readExcel("buyWithCondition.xlsx")
+	df = dbconnect.read("CONDITION_BUY")
 	for index, row in df.iterrows():
-		if row['Stock'] not in buyList:
-			removeFromCondition(row['Stock'])
+		if row['STOCK'] not in temp_list:
+			dbconnect.delete("CONDITION_BUY", "STOCK", row['STOCK'])
+			#removeFromCondition(row['Stock'])
 			
-	print 'buy '+str(buyList)
+	print 'buy '+str(temp_list)
 	
 if __name__ == "__main__":
     main()

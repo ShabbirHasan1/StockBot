@@ -207,7 +207,7 @@ def main():
 	positiveList = my_dictionary()
 	count = 0.0
 	#totalStock = 60.0
-	totalStock = 2508.0
+	totalStock = 2278.0
 	wb = load_workbook("Scores.xlsx")
 	wbHeaders = ['Share', 'Industry', 'Trend', 'Average', 'Median', 'PE', 'News', 'Quarter', 'Total']
 	wb.remove(wb.worksheets[0])
@@ -289,7 +289,8 @@ def main():
 	
 	#find top buy list
 	topBuyList = dict(Counter(buyList).most_common(5))
-	utils.saveToFile(topBuyList, 'buy.txt')
+	#utils.saveToFile(topBuyList, 'buy.txt')
+	dbconnect.upsertList("BUY", topBuyList)
 	wb.save("Scores.xlsx")
 	print 'Top shares to be bought are:'
 	print topBuyList

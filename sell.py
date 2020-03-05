@@ -13,6 +13,7 @@ import os
 import xlrd
 import order
 import utils
+import dbconnect
 from openpyxl import load_workbook
 
 
@@ -36,7 +37,7 @@ def shouldSell(currentPrice, purchasePrice, purchaseDate, quantity):
 	return 0
 	
 def sellAll(item, price, qty):
-	df  = utils.readExcel("boughtList.xlsx")
+	df  = dbconnect.read("BOUGHT_LIST")
 	
 	#read balance from file
 	balance = utils.getBalance()
@@ -47,36 +48,40 @@ def sellAll(item, price, qty):
 	if status==1:
 		print 'Sell Item :'+item+' | Qty :'+ str(qty)+' | Sell :'+str(price)
 		newBalance = float(balance) + (price*qty)
-		utils.saveToFileItem(str(newBalance), 'balance.txt')
-		if item in utils.readText('buy.txt'):
-			#add to buywithcondition
-			wb = load_workbook("buyWithCondition.xlsx")
-			ws = wb.worksheets[0]
-			row_data = [None] * 2
-			row_data[0] = item
-			row_data[1] = price*.975
-			ws.append(row_data)
-			wb.save("buyWithCondition.xlsx")
-	
-		df = df[df['Name'] != item]
-		df.to_excel("boughtList.xlsx",sheet_name='Sheet1',index=False)
+		#utils.saveToFileItem(str(newBalance), 'balance.txt')
+		dbconnect.upsert("BALANCE", ('1', str(newBalance)) )
+		buyDf = dbconnect.read("BUY")
+		temp_list = []
+		for index, row in buyDf.iterrows():
+			if index == 0:
+				temp_list = [row.ITEM1, row.ITEM2, row.ITEM3, row.ITEM4, row.ITEM5]
+			if item in temp_list:
+				#wb = load_workbook("buyWithCondition.xlsx")
+				#ws = wb.worksheets[0]
+				row_data = [None] * 3
+				row_data[0] = '1'
+				row_data[1] = str(item)
+				row_data[2] = str(price*.975)
+				dbconnect.upsert('CONDITION_BUY', row_data)
+				
+		dbconnect.delete('BOUGHT_LIST', 'NAME', item)
 	
 def main():
 	#main function
 	headers = {'authorization': "Basic API Key Ommitted", 'accept': "application/json", 'accept': "text/csv"}
 	print "Running seller"
 	sellList = []
-	df = utils.readExcel('boughtList.xlsx')
-	
+	#df = utils.readExcel('boughtList.xlsx')
+	df = dbconnect.read('BOUGHT_LIST')
 	for index, row in df.iterrows():
-		print 'Running for '+ str(row['Name'])
-		url = 'https://appfeeds.moneycontrol.com//jsonapi//stocks//graph&format=json&range=max&type=area&ex=&sc_id='+str(row['Name'])
+		print 'Running for '+ str(row['NAME'])
+		url = 'https://appfeeds.moneycontrol.com//jsonapi//stocks//graph&format=json&range=max&type=area&ex=&sc_id='+str(row['NAME'])
 		rcomp = requests.get(url, headers=headers)
 		data = json.loads(rcomp.text)
 		currentPrice = float(data['graph']['current_close'])
-		if shouldSell(currentPrice, float(row['Price']), datetime.strptime(row['Date'], '%d %b %Y').date(), int(row['Qty'])):
-			sellList.append(row['Name'])
-			sellAll(str(row['Name']), currentPrice, int(row['Qty']))
+		if shouldSell(currentPrice, float(row['PRICE']), datetime.strptime(row['DATE'], '%d %b %Y').date(), int(row['QTY'])):
+			sellList.append(row['NAME'])
+			sellAll(str(row['NAME']), currentPrice, int(row['QTY']))
 			
 	#if len(sellList) is not 0:
 	#	utils.sendSMS('sell ', sellList)

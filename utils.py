@@ -20,6 +20,7 @@ from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
 from email.utils import formatdate
 from email import encoders
+import dbconnect
 
 def loadingBar(count,total,size):
 	percent = float(count)/float(total)*100
@@ -189,11 +190,18 @@ def getAlertScore(stock):
 	return scoreNews
 	
 def getBalance():
-	balances = readText('balance.txt')
-	balance = 0.0
-	for item in balances:
-		balance = item
-	return float(str(balance))
+	#balances = readText('balance.txt')
+	#balance = 0.0
+	#for item in balances:
+	#	balance = item
+	#return float(str(balance))
+	df = dbconnect.read("BALANCE")
+	for index, row in df.iterrows():
+		if index == 0:
+			print 'returning amount :'+ str(row['AMOUNT'])
+			return float(row['AMOUNT'])
+			
+	return 0.0
 	
 	
 def hasItem(text, file, column):
