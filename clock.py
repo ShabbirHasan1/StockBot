@@ -26,7 +26,7 @@ sched = BlockingScheduler()
 @sched.scheduled_job('interval', minutes=60)
 def timed_job():
 	holdings.main()
-	print('This job is run every ten minutes.')
+	print('This job is run every sixty minutes.')
 
 @sched.scheduled_job('interval', minutes=10)
 def timed_job():
@@ -34,16 +34,16 @@ def timed_job():
 	print('This job is run every ten minutes.')
 
 
-@sched.scheduled_job('cron', day_of_week='mon-sun', hour=11, minute=48)
+@sched.scheduled_job('cron', day_of_week='mon-sun', hour=14, minute=05)
 def scheduled_job1():
 	generate_token.main()
-	print 'This job is run every weekday at 17:18.'
+	print 'This job is run every weekday at 22:05.'
 
 
-@sched.scheduled_job('cron', day_of_week='mon-sun', hour=14, minute=40)
+@sched.scheduled_job('cron', day_of_week='mon-sun', hour=14, minute=30)
 def scheduled_job1():
 	storeFinancials.main()
-	print 'This job is run every weekday at 22:40.'
+	print 'This job is run every weekday at 22:30.'
 
 #@sched.scheduled_job('cron', day_of_week='mon-fri', hour=13, minute=30)
 #def scheduled_job1():
@@ -58,17 +58,17 @@ def scheduled_job1():
 @sched.scheduled_job('cron', day_of_week='mon-sun', hour=21, minute=00)
 def scheduled_job4():
 	Median.main()
-	print 'This job is run every weekday at 2:30 am.'
+	print 'This job is run every weekday at 5:00 am.'
 	
 @sched.scheduled_job('cron', day_of_week='mon-sun', hour=22, minute=00)
 def scheduled_job2():
 	ScoreBuyStocks.main()
-	print 'This job is run every weekday at 03:30 am.'
+	print 'This job is run every weekday at 06:00 am.'
 
-@sched.scheduled_job('cron', day_of_week='mon-fri', hour=9, minute=25)
+@sched.scheduled_job('cron', day_of_week='mon-fri', hour=5, minute=00)
 def scheduled_job():
 	buy.main()
-	print('This job is run every weekday at 13:30 PM IST')
+	print('This job is run every weekday at 13:00 PM')
 
 print 'Job is running now'
 sched.start()
