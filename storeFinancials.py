@@ -144,7 +144,6 @@ def main():
 
 		wb.save("Financials.xlsx")
 		
-	dbconnect.close()
 if __name__ == "__main__":
     main()
 	

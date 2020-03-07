@@ -18,6 +18,7 @@ from openpyxl import load_workbook
 from collections import defaultdict
 from time import strptime
 import dbconnect
+import dbconnect_new
 
 #read list of all stock
 ratioFiles = ['Net Profit Margin(%)','Return on Assets Excluding Revaluations', 'Return On Net Worth(%)', 'Return On Capital Employed(%)', 'Total Income - Capital Employed(%)', 'Debt Equity Ratio']
@@ -280,6 +281,7 @@ def main():
 			total = trendScore + industryScore + medianScore + peScore + newsScore + quarterScore
 			row_data[8] = str(total)
 			ws.append(row_data)
+			dbconnect_new.upsert("Scores", row_data)
 			#print 'Trendscore: '+str(trendScore)+ '| Industry score: '+str(industryScore)+'| Median Score '+str(medianScore)+ '|PE Score '+str(peScore)+'|News Score '+str(newsScore)+'|Quarter score '+str(quarterScore)+'| Total '+str(total) 
 			
 			buyList.add(str(row['id']), total)
@@ -290,6 +292,7 @@ def main():
 	#find top buy list
 	topBuyList = dict(Counter(buyList).most_common(5))
 	#utils.saveToFile(topBuyList, 'buy.txt')
+	
 	dbconnect.upsertList("BUY", topBuyList)
 	wb.save("Scores.xlsx")
 	print 'Top shares to be bought are:'
