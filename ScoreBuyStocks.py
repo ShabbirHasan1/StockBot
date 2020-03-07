@@ -19,23 +19,32 @@ from collections import defaultdict
 from time import strptime
 import dbconnect
 import dbconnect_new
-
+import dbconnect3
 #read list of all stock
 ratioFiles = ['Net Profit Margin(%)','Return on Assets Excluding Revaluations', 'Return On Net Worth(%)', 'Return On Capital Employed(%)', 'Total Income - Capital Employed(%)', 'Debt Equity Ratio']
 financials = ['Total Income From Operations', 'Net Profit/(Loss) For the Period']
-shareRatiodf = utils.readExcel('Ratios.xlsx')
+#shareRatiodf = utils.readExcel('Ratios.xlsx')
+shareRatiodf = dbconnect3.read('Ratios')
 #shareRatiodf = dbconnect.read("`TABLE 2`")
 #shareFinancialdf = utils.readExcel('Financials.xlsx')
 shareFinancialdf = dbconnect.read("`TABLE 1`")
 
-PATdf = utils.readExcel('Net Profit Margin(%).xlsx')
-ROAdf = utils.readExcel('Return on Assets Excluding Revaluations.xlsx')
-ROWdf = utils.readExcel('Return On Net Worth(%).xlsx')
-ROCAdf =  utils.readExcel('Return On Capital Employed(%).xlsx')
-NIdf =  utils.readExcel('Total Income - Capital Employed(%).xlsx')
-DIdf = utils.readExcel('Dividend Yield.xlsx')
-PEdf = utils.readExcel('PE Ratio.xlsx')
-DERatio = utils.readExcel('Debt Equity Ratio.xlsx')
+#PATdf = utils.readExcel('Net Profit Margin(%).xlsx')
+PATdf = dbconnect_new.read('`Net Profit Margin(%)`')
+#ROAdf = utils.readExcel('Return on Assets Excluding Revaluations.xlsx')
+ROAdf = dbconnect_new.read('`Return on Assets Excluding Revaluations`')
+#ROWdf = utils.readExcel('Return On Net Worth(%).xlsx')
+ROWdf = dbconnect_new.read('`Return On Net Worth(%)`')
+#ROCAdf =  utils.readExcel('Return On Capital Employed(%).xlsx')
+ROCAdf = dbconnect_new.read('`Return On Capital Employed(%)`')
+#NIdf =  utils.readExcel('Total Income - Capital Employed(%).xlsx')
+NIdf = dbconnect_new.read('`Total Income - Capital Employed(%)`')
+#DIdf = utils.readExcel('Dividend Yield.xlsx')
+DIdf = dbconnect_new.read('`Dividend Yield`')
+#PEdf = utils.readExcel('PE Ratio.xlsx')
+PEdf = dbconnect_new.read('`PE Ratio`')
+#DERatio = utils.readExcel('Debt Equity Ratio.xlsx')
+DERatio = dbconnect_new.read('`Debt Equity Ratio`')
 buyList = my_dictionary()
 trendMap = my_dictionary()
 priceMap = my_dictionary()

@@ -16,7 +16,8 @@ import xlsxwriter
 import utils
 import dbconnect
 from openpyxl import load_workbook
-
+import dbconnect3
+import time
 
 def getKey(ratio):
 	switcher={
@@ -158,7 +159,8 @@ def main():
 
 			
 				# Append Row Values
-				#dbconnect.upsert("`TABLE 2`", row_data)
+				time.sleep(5)
+				dbconnect3.upsert("Ratios", row_data)
 				ws.append(row_data)
 		except Exception as e:
 			print e

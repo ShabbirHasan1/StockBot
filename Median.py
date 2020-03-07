@@ -15,7 +15,8 @@ import xlsxwriter
 import utils
 from openpyxl import load_workbook
 import dbconnect
-
+import dbconnect_new
+import dbconnect3
 
 def main():
 	#main function
@@ -25,7 +26,8 @@ def main():
 	ratioList = ['Net Profit Margin(%)','Return on Assets Excluding Revaluations', 'Return On Net Worth(%)', 'Return On Capital Employed(%)', 'Total Income / Capital Employed(%)', 'Dividend Yield', 'PE Ratio', 'Debt Equity Ratio']
 	count = 0
 	
-	df = utils.readExcel('Ratios.xlsx')
+	#df = utils.readExcel('Ratios.xlsx')
+	df = dbconnect3.read('Ratios')
 	#df = dbconnect.read("`TABLE 2`")
 	# Replace the column with the converted values
 	df['PE Ratio'] = pd.to_numeric(df['PE Ratio'], errors='coerce')
@@ -44,7 +46,10 @@ def main():
 			#   so NA values in other columns aren't dropped
 			df.dropna(subset = ['Net Profit Margin(%)', 'Return On Net Worth(%)', 'Return On Capital Employed(%)', 'Total Income / Capital Employed(%)', 'Dividend Yield', 'Return on Assets Excluding Revaluations', 'PE Ratio', 'Debt Equity Ratio'])
 			df2 = df.groupby(['Industry', 'Year', 'Month'], as_index=False)[item].median()
-			df2.to_excel(str(item).replace('/','-')+'.xlsx', sheet_name=str(count))
+			dbconnect_new.upsertDF(str(item).replace('/','-'), df2)
+			
+			#change this
+			#df2.to_excel(str(item).replace('/','-')+'.xlsx', sheet_name=str(count))
 			print item + " done"
 			count = count + 1
 		except Exception as e:

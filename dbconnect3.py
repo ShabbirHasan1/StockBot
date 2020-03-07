@@ -3,15 +3,14 @@ import mysql.connector
 from mysql.connector import errorcode
 import pandas as pd
 from datetime import date
-from db_connector_new import db_connector_new
-from sqlalchemy import create_engine
+from db_connector3 import db_connector3
 #conn = MySQLdb.connect(host='fdb17.runhosting.com', user='sukrit.raghuvanshi1990', passwd='Crashing@1', db='3337075_stock')
 
 #def close():
 #	cursor.close()
 #	conn.close()
 
-@db_connector_new
+@db_connector3
 def upsertList(conn, table, items):
 	cursor = conn.cursor()
 	today =  str(date.today().strftime('%d %b %Y'))
@@ -25,14 +24,8 @@ def upsertList(conn, table, items):
 	print query_string
 	cursor.execute(query_string)
 	conn.commit()
-	
-@db_connector_new
-def upsertDF(conn, table, df):
-	#df.to_sql(con=conn, name=table, if_exists='replace', flavor='mysql')
-	engine = create_engine("mysql://b3386ea5051315:dbe2db2d@us-cdbr-iron-east-04.cleardb.net/heroku_6080183310e92dc")
-	df.to_sql(con=engine, name=table, if_exists='append', index=False)
 
-@db_connector_new
+@db_connector3
 def upsert(conn, table, items):
 	cursor = conn.cursor()
 	#var_string = ', '.join('?' * len(items))
@@ -42,14 +35,14 @@ def upsert(conn, table, items):
 	cursor.executemany(query_string, items)
 	conn.commit()
 	
-@db_connector_new
+@db_connector3
 def read(conn, table):
 	query_string = "SELECT * FROM "+ table
 	df = pd.read_sql_query(query_string, conn)
 	#print(df)
 	return df
 
-@db_connector_new
+@db_connector3
 def readItem(conn, table, column):
 	df = read(table)
 	for index, row in df.iterrows():
@@ -57,7 +50,7 @@ def readItem(conn, table, column):
 			print 'returning value :'+ str(row[column])
 			return str(row[column])
 
-@db_connector_new
+@db_connector3
 def delete(conn, table, column, item):
 	cursor = conn.cursor()
 	query_string = "DELETE FROM "+ table+" WHERE "+column+" = '"+str(item)+"'"
@@ -65,7 +58,7 @@ def delete(conn, table, column, item):
 	cursor.execute(query_string, item)
 	conn.commit()
 
-@db_connector_new
+@db_connector3
 def hasItem(conn, item, table, column):
 	query_string = "SELECT * FROM "+table+" WHERE "+ column+ " = '"+item+"'"
 	df = pd.read_sql_query(query_string, conn)
