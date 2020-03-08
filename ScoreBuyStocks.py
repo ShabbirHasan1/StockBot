@@ -20,6 +20,7 @@ from time import strptime
 import dbconnect
 import dbconnect_new
 import dbconnect3
+import time
 #read list of all stock
 ratioFiles = ['Net Profit Margin(%)','Return on Assets Excluding Revaluations', 'Return On Net Worth(%)', 'Return On Capital Employed(%)', 'Total Income - Capital Employed(%)', 'Debt Equity Ratio']
 financials = ['Total Income From Operations', 'Net Profit/(Loss) For the Period']
@@ -302,7 +303,13 @@ def main():
 			total = trendScore + industryScore + medianScore + peScore + newsScore + quarterScore
 			row_data[8] = str(total)
 			ws.append(row_data)
-			dbconnect_new.upsert("Scores", row_data)
+			try:
+				dbconnect_new.upsert("Scores", row_data)
+			except Exception as e:
+				print e
+				time.sleep(3700)
+				print 'sleeping'
+				dbconnect_new.upsert("Scores", row_data)
 			#print 'Trendscore: '+str(trendScore)+ '| Industry score: '+str(industryScore)+'| Median Score '+str(medianScore)+ '|PE Score '+str(peScore)+'|News Score '+str(newsScore)+'|Quarter score '+str(quarterScore)+'| Total '+str(total) 
 			
 			buyList.add(str(row['id']), total)
@@ -315,6 +322,8 @@ def main():
 	#utils.saveToFile(topBuyList, 'buy.txt')
 	
 	dbconnect.upsertList("BUY", topBuyList)
+	
+		
 	wb.save("Scores.xlsx")
 	print 'Top shares to be bought are:'
 	print topBuyList
