@@ -26,12 +26,14 @@ def upsertList(conn, table, items):
 	cursor.execute(query_string)
 	conn.commit()
 	
-@db_connector_new
-def upsertDF(conn, table, df):
-	#df.to_sql(con=conn, name=table, if_exists='replace', flavor='mysql')
+def upsertDF(table, df):
 	engine = create_engine("mysql://b3386ea5051315:dbe2db2d@us-cdbr-iron-east-04.cleardb.net/heroku_6080183310e92dc")
-	df.to_sql(con=engine, name=table, if_exists='append', index=False)
-
+	connection = engine.connect()
+	df.to_sql(con=engine, name=table, if_exists='replace', index=False)
+	#conn.commit()
+	connection.close()
+	engine.dispose()
+	
 @db_connector_new
 def upsert(conn, table, items):
 	cursor = conn.cursor()

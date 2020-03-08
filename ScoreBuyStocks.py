@@ -23,8 +23,8 @@ import dbconnect3
 #read list of all stock
 ratioFiles = ['Net Profit Margin(%)','Return on Assets Excluding Revaluations', 'Return On Net Worth(%)', 'Return On Capital Employed(%)', 'Total Income - Capital Employed(%)', 'Debt Equity Ratio']
 financials = ['Total Income From Operations', 'Net Profit/(Loss) For the Period']
-#shareRatiodf = utils.readExcel('Ratios.xlsx')
-shareRatiodf = dbconnect3.read('Ratios')
+shareRatiodf = utils.readExcel('Ratios.xlsx')
+#shareRatiodf = dbconnect3.read('Ratios')
 #shareRatiodf = dbconnect.read("`TABLE 2`")
 #shareFinancialdf = utils.readExcel('Financials.xlsx')
 shareFinancialdf = dbconnect.read("`TABLE 1`")
@@ -154,10 +154,13 @@ def getValue(share, industry, ratio):
 		if (row['Industry'] == industry) and (int(row['Year']) == year) and (row['Month'] == month):
 			industryMedian = float(row[ratio])
 	
+	#print 'Share median  '+str(shareMedian)+ ' Industry median : ' + str(industryMedian)
 	adjustedScore = getAdjustedScore(shareMedian, industryMedian)		
 	
 	if ratio=='Debt Equity Ratio':
 		adjustedScore = adjustedScore*-1
+	
+	#print 'returning '+str(adjustedScore)+ ' ratio: ' + str(ratio)
 	return adjustedScore
 
 def getMedianScore(share, industry):
@@ -166,6 +169,9 @@ def getMedianScore(share, industry):
 	counter = 0
 	for item in ratioFiles:
 		score = score + getValue(share, industry, str(item).replace('-','/'))
+
+	if counter == 0:
+		return 0.0
 	return score/counter
 	
 def getPEScore(share, currentPrice, industry):
@@ -269,23 +275,29 @@ def main():
 			#give trend score
 			trendScore = trendMap[str(row['id'])]
 			row_data[2] = str(trendScore)
+			#print 'trend score is '+ str(trendScore)
 			
 			#give industry change score
 			industryScore = getAdjustedScore(averageList[str(row['Industry'])], 1.0) * IAVGWEIGHT * 10
 			row_data[3] = str(industryScore)
-	
+			#print 'industryScore is '+ str(industryScore)
+			
 			#give ratio median score
 			medianScore = getMedianScore(str(row['id']), str(row['Industry'])) * MEDIANWEIGHT
 			row_data[4] = str(medianScore)
+			#print 'medianScore is '+ str(medianScore)
 	
 			quarterScore = getQuarterScore(str(row['id']))*QUARTERWEIGHT
 			row_data[7] = str(quarterScore)
+			#print 'quarterScore is '+ str(quarterScore)
 			
 			peScore = getPEScore(str(row['id']), currentPrice, str(row['Industry']))*PERATIOWEIGHT
 			row_data[5] = str(peScore)
+			#print 'peScore is '+ str(peScore)
 			
 			newsScore = utils.getAlertScore(str(row['id'])) * NEWSWEIGHT
 			row_data[6] = str(newsScore)
+			#print 'newsScore is '+ str(newsScore)
 			
 			total = trendScore + industryScore + medianScore + peScore + newsScore + quarterScore
 			row_data[8] = str(total)
