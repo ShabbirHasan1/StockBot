@@ -23,7 +23,7 @@ sched = BlockingScheduler()
 #	sell.main()
 #	print 'This job is run every weekday at 10:25 am.'
 
-@sched.scheduled_job('interval', minutes=60)
+@sched.scheduled_job('interval', minutes=59)
 def timed_job():
 	holdings.main()
 	print('This job is run every sixty minutes.')
