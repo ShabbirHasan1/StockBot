@@ -162,11 +162,17 @@ def main():
 
 			
 					# Append Row Values
-					
-					dbconnect4.upsert("Ratios", row_data)
 					ws.append(row_data)
+					try:
+						dbconnect3.upsert("Ratios", row_data)
+						time.sleep(5)
+					except Exception as e:
+						print e
+						time.sleep(3700)
+						dbconnect3.upsert("Ratios", row_data)
 			except Exception as e:
 				print e
+				
 	
 	#Loop through all, add to topBuyList
 	for num, row in df.iterrows():
@@ -208,12 +214,17 @@ def main():
 							row_data[index] = str(ratio['value']).replace(',', '')
 
 				
-					
-					dbconnect3.upsert("Ratios", row_data)
+					try:
+						dbconnect4.upsert("Ratios", row_data)
+						time.sleep(5)
+					except Exception as e:
+						print e
+						time.sleep(3700)
+						dbconnect4.upsert("Ratios", row_data)
 					ws.append(row_data)
 			except Exception as e:
 				print e
-
+				
 	
 	wb.save("Ratios.xlsx")
 
