@@ -33,7 +33,7 @@ def upsert(conn, table, items):
 	query_string = "REPLACE INTO "+ table+" VALUES %s;" % (tuple(items),)
 	print query_string
 	cursor.executemany(query_string, items)
-	conn.commit()
+	#conn.commit()
 	
 @db_connector4
 def read(conn, table):

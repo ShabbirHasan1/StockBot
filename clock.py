@@ -45,10 +45,10 @@ def scheduled_job1():
 	storeFinancials.main()
 	print 'This job is run every weekday at 19:00.'
 	
-@sched.scheduled_job('cron', day_of_week='mon-sun', hour=11, minute=00)
+@sched.scheduled_job('cron', day_of_week='mon-sun', hour=12, minute=07)
 def scheduled_job1():
 	storeRatios.main()
-	print 'This job is run every weekday at 19:00.'
+	print 'This job is run every weekday at 20:07.'
 
 	
 @sched.scheduled_job('cron', day_of_week='mon-sun', hour=19, minute=00)
