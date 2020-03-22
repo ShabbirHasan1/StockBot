@@ -9,9 +9,7 @@ import dbconnect
 logging.basicConfig(level=logging.DEBUG)
 
 #token = str(utils.readText('access_token.txt')[0])
-token = dbconnect.readItem('TOKEN', 'VALUE')
 
-kite = KiteConnect(api_key="6m485o0cpsicqsw7", access_token=token)
 
 def getMappedSymbol(stock):
 	df = utils.readExcel('stock-unique.xlsx')
@@ -22,7 +20,8 @@ def getMappedSymbol(stock):
 	return
 
 def place_order(stock, type, qty):
-
+	token = dbconnect.readItem('TOKEN', 'VALUE')
+	kite = KiteConnect(api_key="6m485o0cpsicqsw7", access_token=token)
 	symbol = getMappedSymbol(stock)
 	if type == "B":
 		trans = kite.TRANSACTION_TYPE_BUY
@@ -49,6 +48,8 @@ def getInstruments():
 	
 def getHoldings():
 	# Get instruments
+	token = dbconnect.readItem('TOKEN', 'VALUE')
+	kite = KiteConnect(api_key="6m485o0cpsicqsw7", access_token=token)
 	return kite.holdings()
 	
 
