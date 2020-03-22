@@ -123,107 +123,60 @@ def main():
 	
 	#Loop through all, add to topBuyList
 	for num, row in df.iterrows():
-		if num%2 == 0:
-			print 'entering 1'
-			try:
-				url = 'https://appfeeds.moneycontrol.com//jsonapi//stocks//graph&format=json&range=max&type=area&ex=&sc_id='+str(row['id'])
-				rcomp = requests.get(url, headers=headers)
-				data = json.loads(rcomp.text)
-				currentPrice = float(data['graph']['current_close'])
-				print 'storing for '+str(row['id'])
-				ratioUrl = 'https://appfeeds.moneycontrol.com//jsonapi//stocks//ratios&type=standalone&scid='+str(row['id'])
-				ratioComp = requests.get(ratioUrl, headers=headers)
-				rData = json.loads(ratioComp.text)
-				
-				for item in rData['company_data']['ratios']:
-				
-					row_data = ["--"] * 71
-					row_data[0] = str(row['id'])
-					row_data[1] = str(row['Industry'])
-					row_data[2] = str(item['year'])
-					row_data[3] = str(item['month'])
-					
-					for ratio in item ['item']:
-						index = getKey(ratio['name'])
-						
-						if index == -1:
-							print str(ratio['name'])+':'+str(ratio['value'])
-						if index == 5:
-							row_data[index] = (ratio['value']).replace(',', '')
-							row_data[70] = round((float((ratio['value']).replace(',', '').replace('--','0'))*100/currentPrice), 2)
-						if index == 49:
-							row_data[index] = str(ratio['value']).replace(',', '')
-							if str(ratio['value']) is not '--':
-								row_data[69] = round(currentPrice/float((ratio['value']).replace(',', '')),2)
-							else: 
-								row_data[69] = '--'
-						else:
-							row_data[index] = str(ratio['value']).replace(',', '')
-
+		print 'entering 1'
+		try:
+			url = 'https://appfeeds.moneycontrol.com//jsonapi//stocks//graph&format=json&range=max&type=area&ex=&sc_id='+str(row['id'])
+			rcomp = requests.get(url, headers=headers)
+			data = json.loads(rcomp.text)
+			currentPrice = float(data['graph']['current_close'])
+			print 'storing for '+str(row['id'])
+			ratioUrl = 'https://appfeeds.moneycontrol.com//jsonapi//stocks//ratios&type=standalone&scid='+str(row['id'])
+			ratioComp = requests.get(ratioUrl, headers=headers)
+			rData = json.loads(ratioComp.text)
 			
-					# Append Row Values
-					ws.append(row_data)
-					try:
-						dbconnect3.upsert("Ratios", row_data)
-						time.sleep(5)
-					except Exception as e:
-						print e
-						time.sleep(3700)
-						dbconnect3.upsert("Ratios", row_data)
-			except Exception as e:
-				print e
+			for item in rData['company_data']['ratios']:
+			
+				row_data = ["--"] * 71
+				row_data[0] = str(row['id'])
+				row_data[1] = str(row['Industry'])
+				row_data[2] = str(item['year'])
+				row_data[3] = str(item['month'])
 				
-	
-	#Loop through all, add to topBuyList
-	for num, row in df.iterrows():
-		if num%2==1:
-			print 'entering 2'
-			try:
-				url = 'https://appfeeds.moneycontrol.com//jsonapi//stocks//graph&format=json&range=max&type=area&ex=&sc_id='+str(row['id'])
-				rcomp = requests.get(url, headers=headers)
-				data = json.loads(rcomp.text)
-				currentPrice = float(data['graph']['current_close'])
-				print 'storing for '+str(row['id'])
-				ratioUrl = 'https://appfeeds.moneycontrol.com//jsonapi//stocks//ratios&type=standalone&scid='+str(row['id'])
-				ratioComp = requests.get(ratioUrl, headers=headers)
-				rData = json.loads(ratioComp.text)
-				
-				for item in rData['company_data']['ratios']:
-				
-					row_data = ["--"] * 71
-					row_data[0] = str(row['id'])
-					row_data[1] = str(row['Industry'])
-					row_data[2] = str(item['year'])
-					row_data[3] = str(item['month'])
+				for ratio in item ['item']:
+					index = getKey(ratio['name'])
 					
-					for ratio in item ['item']:
-						index = getKey(ratio['name'])
-						
-						if index == -1:
-							print str(ratio['name'])+':'+str(ratio['value'])
-						if index == 5:
-							row_data[index] = (ratio['value']).replace(',', '')
-							row_data[70] = round((float((ratio['value']).replace(',', '').replace('--','0'))*100/currentPrice), 2)
-						if index == 49:
-							row_data[index] = str(ratio['value']).replace(',', '')
-							if str(ratio['value']) is not '--':
-								row_data[69] = round(currentPrice/float((ratio['value']).replace(',', '')),2)
-							else: 
-								row_data[69] = '--'
-						else:
-							row_data[index] = str(ratio['value']).replace(',', '')
-
-				
+					if index == -1:
+						print str(ratio['name'])+':'+str(ratio['value'])
+					if index == 5:
+						row_data[index] = (ratio['value']).replace(',', '')
+						row_data[70] = round((float((ratio['value']).replace(',', '').replace('--','0'))*100/currentPrice), 2)
+					if index == 49:
+						row_data[index] = str(ratio['value']).replace(',', '')
+						if str(ratio['value']) is not '--':
+							row_data[69] = round(currentPrice/float((ratio['value']).replace(',', '')),2)
+						else: 
+							row_data[69] = '--'
+					else:
+						row_data[index] = str(ratio['value']).replace(',', '')
+			
+				# Append Row Values
+				ws.append(row_data)
+				if num%2==1:
 					try:
 						dbconnect4.upsert("Ratios", row_data)
-						time.sleep(5)
 					except Exception as e:
 						print e
 						time.sleep(3700)
 						dbconnect4.upsert("Ratios", row_data)
-					ws.append(row_data)
-			except Exception as e:
-				print e
+				else:
+					try:
+						dbconnect3.upsert("Ratios", row_data)
+					except Exception as e:
+						print e
+						time.sleep(3700)
+						dbconnect3.upsert("Ratios", row_data)
+		except Exception as e:
+			print e
 				
 	
 	wb.save("Ratios.xlsx")

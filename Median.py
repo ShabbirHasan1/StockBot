@@ -1,3 +1,4 @@
+#!/usr/bin/python2.7
 from pprint import pprint
 import numpy as np
 import pandas as pd
@@ -17,6 +18,7 @@ from openpyxl import load_workbook
 import dbconnect
 import dbconnect_new
 import dbconnect3
+import dbconnect4
 
 def main():
 	#main function
@@ -26,18 +28,21 @@ def main():
 	ratioList = ['Net Profit Margin(%)','Return on Assets Excluding Revaluations', 'Return On Net Worth(%)', 'Return On Capital Employed(%)', 'Total Income / Capital Employed(%)', 'Dividend Yield', 'PE Ratio', 'Debt Equity Ratio']
 	count = 0
 	
-	df = utils.readExcel('Ratios.xlsx')
-	#df = dbconnect3.read('Ratios')
+	#df = utils.readExcel('Ratios.xlsx')
+	df1 = dbconnect3.read('Ratios')
+	df2 = dbconnect4.read('Ratios')
+	#frames = [df1, df2]
+	df = pd.merge(df1, df2)
 	#df = dbconnect.read("`TABLE 2`")
 	# Replace the column with the converted values
-	df['PE Ratio'] = pd.to_numeric(df['PE Ratio'], errors='coerce')
-	df['Net Profit Margin(%)'] = pd.to_numeric(df['Net Profit Margin(%)'], errors='coerce')
-	df['Return On Net Worth(%)'] = pd.to_numeric(df['Return On Net Worth(%)'], errors='coerce')
-	df['Return On Capital Employed(%)'] = pd.to_numeric(df['Return On Capital Employed(%)'], errors='coerce')
-	df['Total Income / Capital Employed(%)'] = pd.to_numeric(df['Total Income / Capital Employed(%)'], errors='coerce')
-	df['Dividend Yield'] = pd.to_numeric(df['Dividend Yield'], errors='coerce')
-	df['Return on Assets Excluding Revaluations'] = pd.to_numeric(df['Return on Assets Excluding Revaluations'], errors='coerce')
-	df['Debt Equity Ratio'] = pd.to_numeric(df['Debt Equity Ratio'], errors='coerce')
+	df['PE Ratio'] = pd.to_numeric(df['PE_Ratio'], errors='coerce')
+	df['Net Profit Margin(%)'] = pd.to_numeric(df['Net_Profit_Margin'], errors='coerce')
+	df['Return On Net Worth(%)'] = pd.to_numeric(df['Return_On_Net_Worth'], errors='coerce')
+	df['Return On Capital Employed(%)'] = pd.to_numeric(df['Return_On_Capital_Employed'], errors='coerce')
+	df['Total Income / Capital Employed(%)'] = pd.to_numeric(df['Total_Income_Capital_Employed'], errors='coerce')
+	df['Dividend Yield'] = pd.to_numeric(df['Dividend_Yield'], errors='coerce')
+	df['Return on Assets Excluding Revaluations'] = pd.to_numeric(df['Return_on_Assets_Excluding_Revaluations'], errors='coerce')
+	df['Debt Equity Ratio'] = pd.to_numeric(df['Debt_Equity_Ratio'], errors='coerce')
 	
 	
 	for item in ratioList:

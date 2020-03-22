@@ -20,12 +20,16 @@ from time import strptime
 import dbconnect
 import dbconnect_new
 import dbconnect3
+import dbconnect4
 import time
 #read list of all stock
 ratioFiles = ['Net Profit Margin(%)','Return on Assets Excluding Revaluations', 'Return On Net Worth(%)', 'Return On Capital Employed(%)', 'Total Income - Capital Employed(%)', 'Debt Equity Ratio']
+ratioColumn = ['Net_Profit_Margin','Return_on_Assets_Excluding_Revaluations', 'Return_On_Net_Worth', 'Return_On_Capital_Employed', 'Total_Income_Capital_Employed', 'Debt_Equity_Ratio']
 financials = ['Total Income From Operations', 'Net Profit/(Loss) For the Period']
-shareRatiodf = utils.readExcel('Ratios.xlsx')
-#shareRatiodf = dbconnect3.read('Ratios')
+#shareRatiodf = utils.readExcel('Ratios.xlsx')
+shareRatiodf1 = dbconnect3.read('Ratios')
+shareRatiodf2 = dbconnect4.read('Ratios')
+shareRatiodf = pd.merge(shareRatiodf1, shareRatiodf2)
 #shareRatiodf = dbconnect.read("`TABLE 2`")
 #shareFinancialdf = utils.readExcel('Financials.xlsx')
 shareFinancialdf = dbconnect.read("`TABLE 1`")
@@ -59,6 +63,17 @@ NEWSWEIGHT = 0.1
 QUARTERWEIGHT = 0.2
 
 counter = 0
+
+def getMap(ratio):
+	return{
+		'Net Profit Margin(%)': 'Net_Profit_Margin',
+		'Return on Assets Excluding Revaluations': 'Return_on_Assets_Excluding_Revaluations',
+		'Return On Net Worth(%)': 'Return_On_Net_Worth',
+		'Return On Capital Employed(%)': 'Return_On_Capital_Employed',
+		'Total Income / Capital Employed(%)': 'Total_Income_Capital_Employed',
+		'PE Ratio':'PE_Ratio',
+		'Debt Equity Ratio':'Debt_Equity_Ratio'
+}[ratio]
 
 def getdfMap(ratio):
 	return{
@@ -132,7 +147,7 @@ def getQuarterScore(share):
 		score = score + getGrowthScore(share, item)
 	return score
 
-def getValue(share, industry, ratio):
+def getValue(share, industry, ratio, ratioColumn):
 	year = 0
 	monthNum = 0
 	shareMedian = 0
@@ -143,7 +158,7 @@ def getValue(share, industry, ratio):
 		if row['Share'] == share:
 			if int(row['Year']) > year or ((int(row['Year']) == year) and utils.monthToNum(row['Month']) > monthNum):
 				try:
-					shareMedian = float(row[ratio])
+					shareMedian = float(row[ratioColumn])
 					year = int(row['Year'])
 					month = str(row['Month'])
 					monthNum = utils.monthToNum(row['Month'])
@@ -169,7 +184,7 @@ def getMedianScore(share, industry):
 	global counter
 	counter = 0
 	for item in ratioFiles:
-		score = score + getValue(share, industry, str(item).replace('-','/'))
+		score = score + getValue(share, industry, str(item).replace('-','/'), getMap(str(item)))
 
 	if counter == 0:
 		return 0.0
@@ -186,7 +201,7 @@ def getPEScore(share, currentPrice, industry):
 		if row['Share'] == share:
 			if int(row['Year']) > year or ((int(row['Year']) == year) and utils.monthToNum(row['Month']) > monthNum):	
 				try:
-					eps = float(row['Earnings Per Share'])
+					eps = float(row['Earnings_Per_Share'])
 					pe = currentPrice/eps
 					year = int(row['Year'])
 					month = str(row['Month'])
