@@ -31,11 +31,15 @@ def main():
 	#df = utils.readExcel('Ratios.xlsx')
 	df1 = dbconnect3.read('Ratios')
 	df2 = dbconnect4.read('Ratios')
+
 	#frames = [df1, df2]
-	df = pd.merge(df1, df2)
+	df = pd.concat([df1, df2])
+
 	#df = dbconnect.read("`TABLE 2`")
+	
 	# Replace the column with the converted values
 	df['PE Ratio'] = pd.to_numeric(df['PE_Ratio'], errors='coerce')
+	df['PE Ratio']
 	df['Net Profit Margin(%)'] = pd.to_numeric(df['Net_Profit_Margin'], errors='coerce')
 	df['Return On Net Worth(%)'] = pd.to_numeric(df['Return_On_Net_Worth'], errors='coerce')
 	df['Return On Capital Employed(%)'] = pd.to_numeric(df['Return_On_Capital_Employed'], errors='coerce')

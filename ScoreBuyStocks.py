@@ -25,31 +25,32 @@ import time
 #read list of all stock
 ratioFiles = ['Net Profit Margin(%)','Return on Assets Excluding Revaluations', 'Return On Net Worth(%)', 'Return On Capital Employed(%)', 'Total Income - Capital Employed(%)', 'Debt Equity Ratio']
 ratioColumn = ['Net_Profit_Margin','Return_on_Assets_Excluding_Revaluations', 'Return_On_Net_Worth', 'Return_On_Capital_Employed', 'Total_Income_Capital_Employed', 'Debt_Equity_Ratio']
-financials = ['Total Income From Operations', 'Net Profit/(Loss) For the Period']
+financials = ['TOTAL INCOME FROM OPERATIONS', 'NET PROFIT/(LOSS) FOR THE PERIOD']
 #shareRatiodf = utils.readExcel('Ratios.xlsx')
 shareRatiodf1 = dbconnect3.read('Ratios')
 shareRatiodf2 = dbconnect4.read('Ratios')
-shareRatiodf = pd.merge(shareRatiodf1, shareRatiodf2)
+shareRatiodf = pd.concat([shareRatiodf1, shareRatiodf2])
+
 #shareRatiodf = dbconnect.read("`TABLE 2`")
 #shareFinancialdf = utils.readExcel('Financials.xlsx')
 shareFinancialdf = dbconnect.read("`TABLE 1`")
 
 #PATdf = utils.readExcel('Net Profit Margin(%).xlsx')
-PATdf = dbconnect_new.read('`Net Profit Margin(%)`')
+PATdf = dbconnect_new.read('`net profit margin(%)`')
 #ROAdf = utils.readExcel('Return on Assets Excluding Revaluations.xlsx')
-ROAdf = dbconnect_new.read('`Return on Assets Excluding Revaluations`')
+ROAdf = dbconnect_new.read('`return on assets excluding revaluations`')
 #ROWdf = utils.readExcel('Return On Net Worth(%).xlsx')
-ROWdf = dbconnect_new.read('`Return On Net Worth(%)`')
+ROWdf = dbconnect_new.read('`return on net worth(%)`')
 #ROCAdf =  utils.readExcel('Return On Capital Employed(%).xlsx')
-ROCAdf = dbconnect_new.read('`Return On Capital Employed(%)`')
+ROCAdf = dbconnect_new.read('`return on capital employed(%)`')
 #NIdf =  utils.readExcel('Total Income - Capital Employed(%).xlsx')
-NIdf = dbconnect_new.read('`Total Income - Capital Employed(%)`')
+NIdf = dbconnect_new.read('`total income - capital employed(%)`')
 #DIdf = utils.readExcel('Dividend Yield.xlsx')
-DIdf = dbconnect_new.read('`Dividend Yield`')
+DIdf = dbconnect_new.read('`dividend yield`')
 #PEdf = utils.readExcel('PE Ratio.xlsx')
-PEdf = dbconnect_new.read('`PE Ratio`')
+PEdf = dbconnect_new.read('`pe ratio`')
 #DERatio = utils.readExcel('Debt Equity Ratio.xlsx')
-DERatio = dbconnect_new.read('`Debt Equity Ratio`')
+DERatio = dbconnect_new.read('`debt equity ratio`')
 buyList = my_dictionary()
 trendMap = my_dictionary()
 priceMap = my_dictionary()
@@ -70,7 +71,7 @@ def getMap(ratio):
 		'Return on Assets Excluding Revaluations': 'Return_on_Assets_Excluding_Revaluations',
 		'Return On Net Worth(%)': 'Return_On_Net_Worth',
 		'Return On Capital Employed(%)': 'Return_On_Capital_Employed',
-		'Total Income / Capital Employed(%)': 'Total_Income_Capital_Employed',
+		'Total Income - Capital Employed(%)': 'Total_Income_Capital_Employed',
 		'PE Ratio':'PE_Ratio',
 		'Debt Equity Ratio':'Debt_Equity_Ratio'
 }[ratio]
@@ -107,20 +108,20 @@ def getGrowthScore(share, financial):
 	prevShareFinancial=0
 	score = 0.0
 	for index, row in shareFinancialdf.iterrows():
-		if row['Share'] == share:
-			if int(row['Year']) > year or ((int(row['Year']) == year) and utils.monthToNum(row['Month']) > monthNum):
+		if row['SHARE'] == share:
+			if int(row['YEAR']) > year or ((int(row['YEAR']) == year) and utils.monthToNum(row['MONTH']) > monthNum):
 				try:
 					shareFinancial = float(row[financial])
-					year = int(row['Year'])
-					month = str(row['Month'])
-					monthNum = utils.monthToNum(row['Month'])
+					year = int(row['YEAR'])
+					month = str(row['MONTH'])
+					monthNum = utils.monthToNum(row['MONTH'])
 					break
 				except Exception as e:
 					continue
 					
 	for index, row in shareFinancialdf.iterrows():
-		if row['Share'] == share:
-			if ((int(row['Year']) == year) and utils.monthToNum(row['Month']) == (monthNum-3)) or ((int(row['Year']) == year -1) and utils.monthToNum(row['Month']) == (monthNum+9)):
+		if row['SHARE'] == share:
+			if ((int(row['YEAR']) == year) and utils.monthToNum(row['MONTH']) == (monthNum-3)) or ((int(row['YEAR']) == year -1) and utils.monthToNum(row['MONTH']) == (monthNum+9)):
 				try:
 					prevShareFinancial = float(row[financial])
 					break
@@ -134,9 +135,9 @@ def getGrowthScore(share, financial):
 def getEPS(share, year, monthNum):
 	for index, row in shareFinancialdf.iterrows():
 		if row['Share'] == share:
-			if int(row['Year']) == year and utils.monthToNum(row['Month']) == monthNum:
+			if int(row['YEAR']) == year and utils.monthToNum(row['MONTH']) == monthNum:
 				try:
-					return float(row['Basic EPS'])
+					return float(row['BASIC EPS'])
 				except Exception as e:
 					return 0
 	return 0
@@ -201,7 +202,7 @@ def getPEScore(share, currentPrice, industry):
 		if row['Share'] == share:
 			if int(row['Year']) > year or ((int(row['Year']) == year) and utils.monthToNum(row['Month']) > monthNum):	
 				try:
-					eps = float(row['Earnings_Per_Share'])
+					eps = float(row['`earnings_per_share`'])
 					pe = currentPrice/eps
 					year = int(row['Year'])
 					month = str(row['Month'])
