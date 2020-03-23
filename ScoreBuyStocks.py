@@ -109,16 +109,15 @@ def getGrowthScore(share, financial):
 	score = 0.0
 	for index, row in shareFinancialdf.iterrows():
 		if row['SHARE'] == share:
-			if int(row['YEAR']) > year or ((int(row['YEAR']) == year) and utils.monthToNum(row['MONTH']) > monthNum):
+			if (int(row['YEAR']) > year) or ((int(row['YEAR']) == year) and utils.monthToNum(row['MONTH']) > monthNum):
 				try:
 					shareFinancial = float(row[financial])
 					year = int(row['YEAR'])
 					month = str(row['MONTH'])
 					monthNum = utils.monthToNum(row['MONTH'])
-					break
 				except Exception as e:
 					continue
-					
+	
 	for index, row in shareFinancialdf.iterrows():
 		if row['SHARE'] == share:
 			if ((int(row['YEAR']) == year) and utils.monthToNum(row['MONTH']) == (monthNum-3)) or ((int(row['YEAR']) == year -1) and utils.monthToNum(row['MONTH']) == (monthNum+9)):
@@ -126,10 +125,10 @@ def getGrowthScore(share, financial):
 					prevShareFinancial = float(row[financial])
 					break
 				except Exception as e:
+					print e
 					return 0
 				
 	return getAdjustedScore(shareFinancial, prevShareFinancial)						
-
 	
 	
 def getEPS(share, year, monthNum):
@@ -202,13 +201,13 @@ def getPEScore(share, currentPrice, industry):
 		if row['Share'] == share:
 			if int(row['Year']) > year or ((int(row['Year']) == year) and utils.monthToNum(row['Month']) > monthNum):	
 				try:
-					eps = float(row['`earnings_per_share`'])
+					eps = float(row['Earnings_Per_Share'])
 					pe = currentPrice/eps
 					year = int(row['Year'])
 					month = str(row['Month'])
 					monthNum = utils.monthToNum(row['Month'])
 				except Exception as e:
-					#print e
+					print e
 					continue
 				
 	for index, row in getdfMap('PE Ratio').iterrows():
