@@ -138,11 +138,11 @@ def main():
 			
 				# Append Row Values
 				try:
-					dbconnect.upsert("`TABLE 1`", row_data)
+					dbconnect.upsertsingle("`TABLE 1`", row_data)
 				except Exception as e:
 					print e
 					time.sleep(3700)
-					dbconnect.upsert("`TABLE 1`", row_data)
+					dbconnect.upsertsingle("`TABLE 1`", row_data)
 				ws.append(row_data)
 		except Exception as e:
 			print e

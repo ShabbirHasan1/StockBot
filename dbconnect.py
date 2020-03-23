@@ -26,7 +26,7 @@ def upsertList(conn, table, items):
 	conn.commit()
 
 @db_connector
-def upsert(conn, table, items):
+def upsertsingle(conn, table, items):
 	cursor = conn.cursor()
 	#var_string = ', '.join('?' * len(items))
 	#query_string = 'REPLACE INTO '+ table+ ' VALUES (%s);' % var_string
@@ -34,6 +34,16 @@ def upsert(conn, table, items):
 	print query_string
 	#cursor.executemany(query_string, items)
 	cursor.execute(query_string)
+	conn.commit()
+	
+@db_connector
+def upsert(conn, table, items):
+	cursor = conn.cursor()
+	#var_string = ', '.join('?' * len(items))
+	#query_string = 'REPLACE INTO '+ table+ ' VALUES (%s);' % var_string
+	query_string = "REPLACE INTO "+ table+" VALUES %s;" % (tuple(items),)
+	print query_string
+	cursor.executemany(query_string, items)
 	conn.commit()
 	
 @db_connector
