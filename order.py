@@ -6,6 +6,8 @@ import re
 import requests
 import urlparse
 import dbconnect
+import dbconnect5
+
 logging.basicConfig(level=logging.DEBUG)
 
 #token = str(utils.readText('access_token.txt')[0])
@@ -21,10 +23,15 @@ def getMappedSymbol(stock):
 		
 	return
 
+
+def getNSESymbol(stock):
+	return dbconnect5.readItemWhere('stock', 'nseid', stock)
+
+
 def place_order(stock, type, qty):
 	token = dbconnect.readItem('TOKEN', 'VALUE')
 	kite = KiteConnect(api_key="6m485o0cpsicqsw7", access_token=token)
-	symbol = getMappedSymbol(stock)
+	symbol = getNSESymbol(stock)
 	if type == "B":
 		trans = kite.TRANSACTION_TYPE_BUY
 	if type == "S":

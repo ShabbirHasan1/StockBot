@@ -58,6 +58,14 @@ def readItem(conn, table, column):
 			return str(row[column])
 
 @db_connector5
+def readItemWhere(conn, table, column, id):
+	df = read(table)
+	for index, row in df.iterrows():
+		if row['id'] == id:
+			print 'returning value :'+ str(row[column])
+			return str(row[column])
+
+@db_connector5
 def delete(conn, table, column, item):
 	cursor = conn.cursor()
 	query_string = "DELETE FROM "+ table+" WHERE "+column+" = '"+str(item)+"'"
