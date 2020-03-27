@@ -21,6 +21,7 @@ import dbconnect
 import dbconnect_new
 import dbconnect3
 import dbconnect4
+import dbconnect5
 import time
 #read list of all stock
 ratioFiles = ['Net Profit Margin(%)','Return on Assets Excluding Revaluations', 'Return On Net Worth(%)', 'Return On Capital Employed(%)', 'Total Income - Capital Employed(%)', 'Debt Equity Ratio']
@@ -167,7 +168,7 @@ def getValue(share, industry, ratio, ratioColumn):
 					continue
 	
 	for index, row in getdfMap(ratio).iterrows():
-		if (row['Industry'] == industry) and (int(row['Year']) == year) and (row['Month'] == month):
+		if (row['sector'] == industry) and (int(row['Year']) == year) and (row['Month'] == month):
 			industryMedian = float(row[ratio])
 	
 	#print 'Share median  '+str(shareMedian)+ ' Industry median : ' + str(industryMedian)
@@ -211,7 +212,7 @@ def getPEScore(share, currentPrice, industry):
 					continue
 				
 	for index, row in getdfMap('PE Ratio').iterrows():
-		if (row['Industry'] == industry) and (int(row['Year']) == year) and (row['Month'] == month):
+		if (row['sector'] == industry) and (int(row['Year']) == year) and (row['Month'] == month):
 			industryMedian = float(row['PE Ratio'])
 	
 	return -1.0 * getAdjustedScore(pe, industryMedian)
@@ -233,7 +234,8 @@ def main():
 
 	print 'Running stock scoring'
 	#read list of all stock
-	df = utils.readExcel('stock-unique.xlsx')
+	#df = utils.readExcel('stock-unique.xlsx')
+	df = dbconnect5.read('stock')
 	averageList = my_dictionary()
 	countList = my_dictionary()
 	positiveList = my_dictionary()
@@ -241,7 +243,7 @@ def main():
 	#totalStock = 60.0
 	totalStock = 2278.0
 	#wb = load_workbook("Scores.xlsx")
-	#wbHeaders = ['Share', 'Industry', 'Trend', 'Average', 'Median', 'PE', 'News', 'Quarter', 'Total']
+	#wbHeaders = ['Share', 'sector', 'Trend', 'Average', 'Median', 'PE', 'News', 'Quarter', 'Total']
 	#wb.remove(wb.worksheets[0])
 	#wb.create_sheet('Scores', 0)
 	#ws = wb.worksheets[0]
@@ -265,12 +267,12 @@ def main():
 			currentPrice = float(data['graph']['current_close'])
 			prevPrice = float(data['graph']['prev_close'])
 			change  = currentPrice/prevPrice
-			countList = utils.upsert(countList, str(row['Industry']))
-			averageList = utils.upsertAverage(averageList, str(row['Industry']), change, countList[str(row['Industry'])])
+			countList = utils.upsert(countList, str(row['sector']))
+			averageList = utils.upsertAverage(averageList, str(row['sector']), change, countList[str(row['sector'])])
 			if currentPrice > prevPrice:
-				positiveList = utils.upsertAverage(positiveList, str(row['Industry']), 1, countList[str(row['Industry'])])
+				positiveList = utils.upsertAverage(positiveList, str(row['sector']), 1, countList[str(row['sector'])])
 			else:
-				positiveList = utils.upsertAverage(positiveList, str(row['Industry']), 0, countList[str(row['Industry'])])
+				positiveList = utils.upsertAverage(positiveList, str(row['sector']), 0, countList[str(row['sector'])])
 			
 			
 		except Exception as e:
@@ -286,7 +288,7 @@ def main():
 			currentPrice = priceMap[str(row['id'])]
 			row_data = [None] * 9
 			row_data[0] = str(row['id'])
-			row_data[1] = str(row['Industry'])
+			row_data[1] = str(row['sector'])
 			
 			#give trend score
 			trendScore = trendMap[str(row['id'])]
@@ -294,12 +296,12 @@ def main():
 			#print 'trend score is '+ str(trendScore)
 			
 			#give industry change score
-			industryScore = getAdjustedScore(averageList[str(row['Industry'])], 1.0) * IAVGWEIGHT * 10
+			industryScore = getAdjustedScore(averageList[str(row['sector'])], 1.0) * IAVGWEIGHT * 10
 			row_data[3] = str(industryScore)
 			#print 'industryScore is '+ str(industryScore)
 			
 			#give ratio median score
-			medianScore = getMedianScore(str(row['id']), str(row['Industry'])) * MEDIANWEIGHT
+			medianScore = getMedianScore(str(row['id']), str(row['sector'])) * MEDIANWEIGHT
 			row_data[4] = str(medianScore)
 			#print 'medianScore is '+ str(medianScore)
 	
@@ -307,7 +309,7 @@ def main():
 			row_data[7] = str(quarterScore)
 			#print 'quarterScore is '+ str(quarterScore)
 			
-			peScore = getPEScore(str(row['id']), currentPrice, str(row['Industry']))*PERATIOWEIGHT
+			peScore = getPEScore(str(row['id']), currentPrice, str(row['sector']))*PERATIOWEIGHT
 			row_data[5] = str(peScore)
 			#print 'peScore is '+ str(peScore)
 			

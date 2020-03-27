@@ -15,6 +15,7 @@ import xlrd
 import xlsxwriter
 import utils
 import dbconnect
+import dbconnect5
 from openpyxl import load_workbook
 import time
 
@@ -93,21 +94,21 @@ def main():
 	print 'Storing financials'
 	
 	#read list of all stock
-	df = utils.readExcel('stock-unique.xlsx')
-		
+	#df = utils.readExcel('stock-unique.xlsx')
+	df = dbconnect5.read('stock')	
 	headers = {'authorization': "Basic API Key Ommitted", 'accept': "application/json", 'accept': "text/csv"}
 
-	wb = load_workbook("Financials.xlsx")
+	#wb = load_workbook("Financials.xlsx")
 	wbHeaders = ['Share', 'Industry', 'Year', 'Month', 'Non-encumbered', 'Net Sales/Income from operations', 'Other Operating Income', 'Total Income From Operations', 'EXPENDITURE', 'Consumption of Raw Materials', 'Purchase of Traded Goods', 'Increase/Decrease in Stocks', 'Power & Fuel', 'Employees Cost', 'Depreciation', 'Excise Duty ', 'Admin. And Selling Expenses ', 'R & D Expenses ', 'Operating Profit before Provisions and contingencies','Provisions And Contingencies ', 'Exp. Capitalised', 'Other Expenses', 'P/L Before Other Inc. , Int., Excpt. Items & Tax', 'Other Income', 'P/L Before Int., Excpt. Items & Tax', 'Interest', 'P/L Before Exceptional Items & Tax', 'Exceptional Items', 'P/L Before Tax', 'Tax', 'P/L After Tax from Ordinary Activities', 'Prior Year Adjustments ', 'Extra Ordinary Items', 'Net Profit/(Loss) For the Period', 'Equity Share Capital', 'Reserves Excluding Revaluation Reserves', 'Equity Dividend Rate (%)', 'Basic EPS', 'Diluted EPS', 'EPS Before Extra Ordinary', 'EPS After Extra Ordinary', 'Number of shares (Crores)', 'Share Holding (%)', 'Public Share Holding', 'Promoters and Promoter Group Shareholding',  'a) Pledged/Encumbered' 'Pledged/Encumbered', '- Per. of shares (as a % of prom. and promoter group)', '- Per. of shares (as a % of Share Cap. of the company)', '- Per. of shares (as a % of prom and promoter group)','- Per. of shares (as a % of Share Cap of the company)','% of Share by Govt.','Capital Adequacy Ratio - Basel - II','Gross NPA','Net NPA', '% of Gross NPA','% of Net NPA', 'Return on Assets %', 'Int. /Disc. on Adv/Bills', 'Income on Investment', 'Int. on balances With RBI', 'Others', 'Interest Expended']
 	
 	
 	# Select First Worksheet
 	#ws = wb.worksheets[0]
-	wb.remove(wb.worksheets[0])
-	wb.create_sheet('Ratios', 0)
-	ws = wb.worksheets[0]
+	#wb.remove(wb.worksheets[0])
+	#wb.create_sheet('Ratios', 0)
+	#ws = wb.worksheets[0]
 
-	ws.append(wbHeaders)
+	#ws.append(wbHeaders)
 	
 	#Loop through all, add to topBuyList
 	for index, row in df.iterrows():
@@ -121,7 +122,7 @@ def main():
 			
 				row_data = ["--"] * 62
 				row_data[0] = str(row['id'])
-				row_data[1] = str(row['Industry'])
+				row_data[1] = str(row['sector'])
 				row_data[2] = str(item['year'])
 				row_data[3] = str(item['month'])
 				
@@ -143,11 +144,11 @@ def main():
 					print e
 					time.sleep(3700)
 					dbconnect.upsertsingle("`TABLE 1`", row_data)
-				ws.append(row_data)
+				#ws.append(row_data)
 		except Exception as e:
 			print e
 
-		wb.save("Financials.xlsx")
+		#wb.save("Financials.xlsx")
 		
 if __name__ == "__main__":
     main()
