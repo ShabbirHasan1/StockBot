@@ -316,6 +316,8 @@ def main():
 			#print 'newsScore is '+ str(newsScore)
 			
 			total = trendScore + industryScore + medianScore + peScore + newsScore + quarterScore
+			if currentPrice <5.0:
+				total = total - 1.0
 			row_data[8] = str(total)
 			ws.append(row_data)
 			try:
