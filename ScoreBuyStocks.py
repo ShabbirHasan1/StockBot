@@ -240,13 +240,13 @@ def main():
 	count = 0.0
 	#totalStock = 60.0
 	totalStock = 2278.0
-	wb = load_workbook("Scores.xlsx")
-	wbHeaders = ['Share', 'Industry', 'Trend', 'Average', 'Median', 'PE', 'News', 'Quarter', 'Total']
-	wb.remove(wb.worksheets[0])
-	wb.create_sheet('Scores', 0)
-	ws = wb.worksheets[0]
+	#wb = load_workbook("Scores.xlsx")
+	#wbHeaders = ['Share', 'Industry', 'Trend', 'Average', 'Median', 'PE', 'News', 'Quarter', 'Total']
+	#wb.remove(wb.worksheets[0])
+	#wb.create_sheet('Scores', 0)
+	#ws = wb.worksheets[0]
 
-	ws.append(wbHeaders)
+	#ws.append(wbHeaders)
 	#iterate every stock
 	for index, row in df.iterrows():
 		try:
@@ -319,7 +319,7 @@ def main():
 			if currentPrice <5.0:
 				total = total - 1.0
 			row_data[8] = str(total)
-			ws.append(row_data)
+			#ws.append(row_data)
 			try:
 				dbconnect_new.upsert("Scores", row_data)
 			except Exception as e:
@@ -341,15 +341,15 @@ def main():
 	dbconnect.upsertList("BUY", topBuyList)
 	
 		
-	wb.save("Scores.xlsx")
+	#wb.save("Scores.xlsx")
 	print 'Top shares to be bought are:'
 	print topBuyList
 	
 	utils.sendSMS('buy ', topBuyList)
-	try:
-		utils.send_mail('sukrit.raghuvanshi1990@gmail.com','sukrit.raghuvanshi1990@gmail.com','Scores','PFA','Scores.xlsx','smtp.gmail.com',587,'sukrit.raghuvanshi1990','Crashing@1',True)
-	except Exception as e:
-		print e
+	#try:
+	#	utils.send_mail('sukrit.raghuvanshi1990@gmail.com','sukrit.raghuvanshi1990@gmail.com','Scores','PFA','Scores.xlsx','smtp.gmail.com',587,'sukrit.raghuvanshi1990','Crashing@1',True)
+	#except Exception as e:
+	#	print e
 
 if __name__ == "__main__":
     main()
