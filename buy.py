@@ -19,6 +19,12 @@ import dbconnect
 MAX_BALANCE = 20000
 
 
+def getFund(id):
+	return float(dbconnect.readItem('BALANCE', 'FUND', 'ID', id))
+
+def getInitial(id):
+	return float(dbconnect.readItem('BALANCE', 'INITIAL', 'ID', id))
+
 def removeFromCondition(item):
 	dbconnect.delete('CONDITION_BUY', 'STOCK', item)
 	#df  = utils.readExcel("buywithcondition.xlsx")
@@ -26,9 +32,9 @@ def removeFromCondition(item):
 	#df.to_excel("buyWithCondition.xlsx",sheet_name='Sheet1',index=False)
 	
 
-def getQty(price):
+def getQty(price, id):
 	#balance = float(str(utils.getBalance()))
-	alBalance = MAX_BALANCE/6.0
+	alBalance = getInitial(id)/6.0
 	return int(alBalance/price)
 
 def getPrice(item):
@@ -40,7 +46,7 @@ def getPrice(item):
 	return currentPrice
 
 def buyItem(item, qty, price, id):
-	if utils.getBalance(id) > 0:
+	if getFund(id) > getInitial(id)/6.0:
 		print 'Buying item'
 		#wb = load_workbook("boughtList.xlsx")
 		#ws = wb.worksheets[0]
@@ -73,7 +79,7 @@ def checkCondition(item, id):
 			currentPrice = getPrice(item)
 			print 'checking price'
 			if currentPrice < float(row['CPRICE']):
-				if (buyItem(item, getQty(currentPrice), currentPrice, id)):
+				if (buyItem(item, getQty(currentPrice, id), currentPrice, id)):
 					removeFromCondition(item)
 			return 1
 	return 0
@@ -97,7 +103,7 @@ def main():
 			if dbconnect.hasItem(item, row['id'], 'BOUGHT_LIST', 'NAME', 'ID'):
 				continue
 			elif checkCondition(item, row['id']) == 0:
-				buyItem(item, getQty(currentPrice), currentPrice, row['id'])
+				buyItem(item, getQty(currentPrice, row['id']), currentPrice, row['id'])
 				
 		#df  = utils.readExcel("buyWithCondition.xlsx")
 		df = dbconnect.readAll("CONDITION_BUY", 'id', row['id'])

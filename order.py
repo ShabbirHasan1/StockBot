@@ -39,7 +39,8 @@ def place_order(stock, type, qty, id):
 	
 	# Place an order
 	try:
-		order_id = kite.place_order(tradingsymbol=symbol, exchange=kite.EXCHANGE_NSE,transaction_type=trans,quantity=qty,order_type=kite.ORDER_TYPE_MARKET,product=kite.PRODUCT_CNC, variety=kite.VARIETY_REGULAR)
+		if (id=='1'):
+			order_id = kite.place_order(tradingsymbol=symbol, exchange=kite.EXCHANGE_NSE,transaction_type=trans,quantity=qty,order_type=kite.ORDER_TYPE_MARKET,product=kite.PRODUCT_CNC, variety=kite.VARIETY_REGULAR)
 	
 		logging.info("Order placed. ID is: {}".format(order_id))
 		logging.info("Order placed: {}".format(str(symbol) + " | "+str(type)+" | "+ str(qty)))
@@ -47,7 +48,7 @@ def place_order(stock, type, qty, id):
 		return 1
 	except Exception as e:
 		try:
-			token = dbconnect.readItem('TOKEN', 'VALUE')
+			token = dbconnect.readItem('TOKEN', 'VALUE', "ID", 1)
 			kite = KiteConnect(api_key="6m485o0cpsicqsw7", access_token=token)
 			order_id = kite.place_order(tradingsymbol=symbol, exchange=kite.EXCHANGE_NSE,transaction_type=trans,quantity=qty,order_type=kite.ORDER_TYPE_MARKET,product=kite.PRODUCT_CNC, variety=kite.VARIETY_REGULAR)
 	
