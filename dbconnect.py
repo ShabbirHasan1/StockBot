@@ -54,24 +54,31 @@ def read(conn, table):
 	return df
 
 @db_connector
-def readItem(conn, table, column):
-	df = read(table)
+def readItem(conn, table, column, column2, item2):
+	df = readAll(table, column2, item2)
 	for index, row in df.iterrows():
 		if index == 0:
 			print 'returning value :'+ str(row[column])
 			return str(row[column])
 
 @db_connector
-def delete(conn, table, column, item):
+def readAll(conn, table, column, item):
+	query_string = "SELECT * FROM "+table+" WHERE "+ column+ " = "+str(item)+""
+	df = pd.read_sql_query(query_string, conn)
+	return df
+
+@db_connector
+def delete(conn, table, column, item, column2, items2):
 	cursor = conn.cursor()
-	query_string = "DELETE FROM "+ table+" WHERE "+column+" = '"+str(item)+"'"
+	query_string = "DELETE FROM "+ table+" WHERE "+column+" = '"+str(item)+"'"+ " AND "+column2+" = "+str(item2)
 	print query_string
 	cursor.execute(query_string, item)
 	conn.commit()
 
 @db_connector
-def hasItem(conn, item, table, column):
-	query_string = "SELECT * FROM "+table+" WHERE "+ column+ " = '"+item+"'"
+def hasItem(conn, item1, item2, table, column1, column2):
+	query_string = "SELECT * FROM "+table+" WHERE "+ column1+ " = '"+item1+"'"+" AND "+ column2+ " = "+str(item2)
+	print query_string
 	df = pd.read_sql_query(query_string, conn)
 	if df.size > 0:
 		return True

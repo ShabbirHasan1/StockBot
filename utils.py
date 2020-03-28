@@ -189,13 +189,13 @@ def getAlertScore(stock):
 		print e
 	return scoreNews
 	
-def getBalance():
+def getBalance(id):
 	#balances = readText('balance.txt')
 	#balance = 0.0
 	#for item in balances:
 	#	balance = item
 	#return float(str(balance))
-	df = dbconnect.read("BALANCE")
+	df = dbconnect.readAll("BALANCE", 'ID', id)
 	for index, row in df.iterrows():
 		if index == 0:
 			print 'returning amount :'+ str(row['AMOUNT'])

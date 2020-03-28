@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 #token = str(utils.readText('access_token.txt')[0])
 
-token = dbconnect.readItem('TOKEN', 'VALUE')
+token = dbconnect.readItem('TOKEN', 'VALUE', "ID", "1")
 kite = KiteConnect(api_key="6m485o0cpsicqsw7", access_token=token)
 	
 def getMappedSymbol(stock):
@@ -28,8 +28,8 @@ def getNSESymbol(stock):
 	return dbconnect5.readItemWhere('stock', 'nseid', stock)
 
 
-def place_order(stock, type, qty):
-	token = dbconnect.readItem('TOKEN', 'VALUE')
+def place_order(stock, type, qty, id):
+	token = dbconnect.readItem('TOKEN', 'VALUE', "ID", id)
 	kite = KiteConnect(api_key="6m485o0cpsicqsw7", access_token=token)
 	symbol = getNSESymbol(stock)
 	if type == "B":
@@ -70,7 +70,7 @@ def getHoldings():
 	try: 
 		return kite.holdings()
 	except Exception as e:
-		token = dbconnect.readItem('TOKEN', 'VALUE')
+		token = dbconnect.readItem('TOKEN', 'VALUE', "ID", "1")
 		kite = KiteConnect(api_key="6m485o0cpsicqsw7", access_token=token)
 		return kite.holdings()
 
