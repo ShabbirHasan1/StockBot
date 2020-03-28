@@ -168,7 +168,7 @@ def getValue(share, industry, ratio, ratioColumn):
 					continue
 	
 	for index, row in getdfMap(ratio).iterrows():
-		if (row['sector'] == industry) and (int(row['Year']) == year) and (row['Month'] == month):
+		if (row['Industry'] == industry) and (int(row['Year']) == year) and (row['Month'] == month):
 			industryMedian = float(row[ratio])
 	
 	#print 'Share median  '+str(shareMedian)+ ' Industry median : ' + str(industryMedian)
@@ -212,7 +212,7 @@ def getPEScore(share, currentPrice, industry):
 					continue
 				
 	for index, row in getdfMap('PE Ratio').iterrows():
-		if (row['sector'] == industry) and (int(row['Year']) == year) and (row['Month'] == month):
+		if (row['Industry'] == industry) and (int(row['Year']) == year) and (row['Month'] == month):
 			industryMedian = float(row['PE Ratio'])
 	
 	return -1.0 * getAdjustedScore(pe, industryMedian)
@@ -254,7 +254,6 @@ def main():
 		try:
 			#utils.drawProgressBar(count/totalStock, 50)
 			utils.loadingBar(count, totalStock, 10)
-			
 			count = count + 1
 			#runtime calculate change average and percentage of stocks on the rise
 			url = 'https://appfeeds.moneycontrol.com//jsonapi//stocks//graph&format=json&range=max&type=area&ex=&sc_id='+str(row['id'])
