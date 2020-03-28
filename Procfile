@@ -1,2 +1,2 @@
-myworker: python MovingAverage.py
+web: gunicorn getPortfolio:api
 clock: python clock.py

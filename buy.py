@@ -46,7 +46,8 @@ def getPrice(item):
 	return currentPrice
 
 def buyItem(item, qty, price, id):
-	if getFund(id) > getInitial(id)/6.0:
+	initial = getInitial(id)
+	if getFund(id) > initial/6.0:
 		print 'Buying item'
 		#wb = load_workbook("boughtList.xlsx")
 		#ws = wb.worksheets[0]
@@ -60,9 +61,9 @@ def buyItem(item, qty, price, id):
 		status = order.place_order(item, "B", qty, id)
 		if status == 1:
 			print 'Buy Item :'+item+' | Qty :'+str(qty)+' | Purchase :'+ str(price)
-			balance = utils.getBalance()
+			balance = utils.getFund(id)
 			balance = balance - (price*qty)
-			dbconnect.upsert("BALANCE", ('1', str(balance)) )
+			dbconnect.upsert("BALANCE", ('1', str(balance), str(balance), str(initial)) )
 			#utils.saveToFileItem(str(balance), 'balance.txt')
 			if qty > 0:
 				#ws.append(row_data)

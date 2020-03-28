@@ -203,6 +203,19 @@ def getBalance(id):
 			
 	return 0.0
 	
+def getFund(id):
+	#balances = readText('balance.txt')
+	#balance = 0.0
+	#for item in balances:
+	#	balance = item
+	#return float(str(balance))
+	df = dbconnect.readAll("BALANCE", 'ID', id)
+	for index, row in df.iterrows():
+		if index == 0:
+			print 'returning amount :'+ str(row['FUND'])
+			return float(row['FUND'])
+			
+	return 0.0
 	
 def hasItem(text, file, column):
 	df  = readExcel(file)

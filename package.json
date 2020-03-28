@@ -5,10 +5,10 @@
   "engines": {
 	"Python": "2.7.13"
   },
-  "main": "MovingAverage.py",
+  "main": "getPortfolio.py",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "python MovingAverage.py"
+    "start": "python getPortfolio.py"
   },
   "repository": {
     "type": "git",

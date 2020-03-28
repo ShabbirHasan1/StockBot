@@ -38,9 +38,9 @@ def shouldSell(currentPrice, purchasePrice, purchaseDate, quantity):
 	
 def sellAll(item, price, qty, id):
 	df  = dbconnect.read("BOUGHT_LIST")
-	
+	initial = dbconnect.readItem('BALANCE', 'INITIAL', 'ID', id)
 	#read balance from file
-	balance = utils.getBalance(id)
+	balance = utils.getFund(id)
 	
 	row_data = [None] * 2
 	
@@ -49,7 +49,7 @@ def sellAll(item, price, qty, id):
 		print 'Sell Item :'+item+' | Qty :'+ str(qty)+' | Sell :'+str(price)
 		newBalance = float(balance) + (price*qty)
 		#utils.saveToFileItem(str(newBalance), 'balance.txt')
-		dbconnect.upsert("BALANCE", (id, str(newBalance)) )
+		dbconnect.upsert("BALANCE", (id, str(newBalance), str(newBalance), initial) )
 		buyDf = dbconnect.read("BUY")
 		temp_list = []
 		for index, row in buyDf.iterrows():
