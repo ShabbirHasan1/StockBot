@@ -34,7 +34,7 @@ shareRatiodf = pd.concat([shareRatiodf1, shareRatiodf2])
 
 #shareRatiodf = dbconnect.read("`TABLE 2`")
 #shareFinancialdf = utils.readExcel('Financials.xlsx')
-shareFinancialdf = dbconnect.read("`TABLE 1`")
+shareFinancialdf = dbconnect5.read("`TABLE 1`")
 
 #PATdf = utils.readExcel('Net Profit Margin(%).xlsx')
 PATdf = dbconnect_new.read('`net profit margin(%)`')
@@ -235,7 +235,7 @@ def main():
 	print 'Running stock scoring'
 	#read list of all stock
 	#df = utils.readExcel('stock-unique.xlsx')
-	df = dbconnect5.read('stock')
+	df = dbconnect.read('stock')
 	averageList = my_dictionary()
 	countList = my_dictionary()
 	positiveList = my_dictionary()

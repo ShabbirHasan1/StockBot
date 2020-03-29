@@ -4,7 +4,6 @@ import os
 import logging
 import sell
 import buy
-import storeRatios
 import Median
 import ScoreBuyStocks
 import storeFinancials
@@ -40,15 +39,11 @@ def scheduled_job1():
 	print 'This job is run every weekday at 22:05.'
 
 
-@sched.scheduled_job('cron', day_of_week='mon-sun', hour=11, minute=20)
+@sched.scheduled_job('cron', day_of_week='mon-sun', hour=11, minute=40)
 def scheduled_job1():
 	storeFinancials.main()
-	print 'This job is run every weekday at 19:20.'
+	print 'This job is run every weekday at 19:40.'
 	
-#@sched.scheduled_job('cron', day_of_week='mon-sun', hour=15, minute=05)
-#	storeRatios.main()
-#	print 'This job is run every weekday at 23:05.'
-
 	
 @sched.scheduled_job('cron', day_of_week='mon-sun', hour=19, minute=00)
 def scheduled_job4():
