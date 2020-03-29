@@ -95,7 +95,7 @@ def main():
 	
 	#read list of all stock
 	#df = utils.readExcel('stock-unique.xlsx')
-	df = dbconnect5.read('stock')	
+	df = dbconnect.read('stock')	
 	headers = {'authorization': "Basic API Key Ommitted", 'accept': "application/json", 'accept': "text/csv"}
 
 	#wb = load_workbook("Financials.xlsx")
@@ -139,11 +139,12 @@ def main():
 			
 				# Append Row Values
 				try:
-					dbconnect.upsertsingle("`TABLE 1`", row_data)
+					dbconnect5.upsertsingle("`TABLE 1`", row_data)
+					time.sleep(5)
 				except Exception as e:
 					print e
 					time.sleep(3700)
-					dbconnect.upsertsingle("`TABLE 1`", row_data)
+					dbconnect5.upsertsingle("`TABLE 1`", row_data)
 				#ws.append(row_data)
 		except Exception as e:
 			print e
