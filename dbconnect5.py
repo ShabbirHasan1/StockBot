@@ -44,7 +44,7 @@ def upsert(conn, table, items):
 	
 @db_connector5
 def read(conn, table):
-	query_string = "SELECT * FROM "+ table + " LIMIT 5"
+	query_string = "SELECT * FROM "+ table
 	df = pd.read_sql_query(query_string, conn)
 	#print(df)
 	return df
