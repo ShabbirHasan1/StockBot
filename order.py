@@ -25,7 +25,7 @@ def getMappedSymbol(stock):
 
 
 def getNSESymbol(stock):
-	return dbconnect5.readItemWhere('stock', 'nseid', stock)
+	return dbconnect.readItemWhere('stock', 'nseid', stock)
 
 
 def place_order(stock, type, qty, id):
@@ -40,12 +40,15 @@ def place_order(stock, type, qty, id):
 	# Place an order
 	try:
 		if (id=='1'):
-			order_id = kite.place_order(tradingsymbol=symbol, exchange=kite.EXCHANGE_NSE,transaction_type=trans,quantity=qty,order_type=kite.ORDER_TYPE_MARKET,product=kite.PRODUCT_CNC, variety=kite.VARIETY_REGULAR)
-	
-		logging.info("Order placed. ID is: {}".format(order_id))
-		logging.info("Order placed: {}".format(str(symbol) + " | "+str(type)+" | "+ str(qty)))
-		print 'order placed'
-		return 1
+			order_id = kite.place_order(tradingsymbol=symbol, exchange=kite.EXCHANGE_NSE,transaction_type=trans,quantity=qty,order_type=kite.ORDER_TYPE_MARKET,product=kite.PRODUCT_CNC, variety=kite.VARIETY_REGULAR)			
+			logging.info("Order placed. ID is: {}".format(order_id))
+			logging.info("Order placed: {}".format(str(symbol) + " | "+str(type)+" | "+ str(qty)))
+			print 'order placed'
+			return 1
+		else:
+			logging.info("Order placed: {}".format(str(symbol) + " | "+str(type)+" | "+ str(qty)))
+			print 'order placed'
+			return 1
 	except Exception as e:
 		try:
 			token = dbconnect.readItem('TOKEN', 'VALUE', "ID", 1)

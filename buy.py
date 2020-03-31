@@ -63,7 +63,7 @@ def buyItem(item, qty, price, id):
 			print 'Buy Item :'+item+' | Qty :'+str(qty)+' | Purchase :'+ str(price)
 			balance = utils.getFund(id)
 			balance = balance - (price*qty)
-			dbconnect.upsert("BALANCE", ('1', str(balance), str(balance), str(initial)) )
+			dbconnect.upsert("BALANCE", (str(id), str(balance), str(balance), str(initial)) )
 			#utils.saveToFileItem(str(balance), 'balance.txt')
 			if qty > 0:
 				#ws.append(row_data)

@@ -54,6 +54,14 @@ def read(conn, table):
 	return df
 
 @db_connector
+def readItemWhere(conn, table, column, id):
+	df = read(table)
+	for index, row in df.iterrows():
+		if row['id'] == id:
+			print 'returning value :'+ str(row[column])
+			return str(row[column])
+
+@db_connector
 def readItem(conn, table, column, column2, item2):
 	df = readAll(table, column2, item2)
 	for index, row in df.iterrows():

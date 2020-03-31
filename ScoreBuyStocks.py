@@ -128,7 +128,6 @@ def getGrowthScore(share, financial):
 				except Exception as e:
 					print e
 					return 0
-				
 	return getAdjustedScore(shareFinancial, prevShareFinancial)						
 	
 	
