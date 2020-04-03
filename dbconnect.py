@@ -76,7 +76,7 @@ def readAll(conn, table, column, item):
 	return df
 
 @db_connector
-def delete(conn, table, column, item, column2, items2):
+def delete(conn, table, column, item, column2, item2):
 	cursor = conn.cursor()
 	query_string = "DELETE FROM "+ table+" WHERE "+column+" = '"+str(item)+"'"+ " AND "+column2+" = "+str(item2)
 	print query_string

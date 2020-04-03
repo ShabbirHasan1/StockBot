@@ -49,7 +49,7 @@ def sellAll(item, price, qty, id):
 		print 'Sell Item :'+item+' | Qty :'+ str(qty)+' | Sell :'+str(price)
 		newBalance = float(balance) + (price*qty)
 		#utils.saveToFileItem(str(newBalance), 'balance.txt')
-		dbconnect.upsert("BALANCE", (id, str(newBalance), str(newBalance), initial) )
+		dbconnect.upsert("BALANCE", (str(id), str(newBalance), str(newBalance), initial) )
 		buyDf = dbconnect.read("BUY")
 		temp_list = []
 		for index, row in buyDf.iterrows():
@@ -59,12 +59,12 @@ def sellAll(item, price, qty, id):
 				#wb = load_workbook("buyWithCondition.xlsx")
 				#ws = wb.worksheets[0]
 				row_data = [None] * 3
-				row_data[0] = id
+				row_data[0] = str(id)
 				row_data[1] = str(item)
 				row_data[2] = str(price*.975)
 				dbconnect.upsert('CONDITION_BUY', row_data)
 				
-		dbconnect.delete('BOUGHT_LIST', 'NAME', item, "ID", id)
+		dbconnect.delete('BOUGHT_LIST', 'NAME', item, "ID", str(id))
 	
 def main():
 	#main function
@@ -75,15 +75,15 @@ def main():
 	for index, row in userDf.iterrows():
 		sellList = []
 		df = dbconnect.readAll('BOUGHT_LIST', 'id', row['id'])
-		for index, row in df.iterrows():
-			print 'Running for '+ str(row['NAME'])
-			url = 'https://appfeeds.moneycontrol.com//jsonapi//stocks//graph&format=json&range=max&type=area&ex=&sc_id='+str(row['NAME'])
+		for index2, row2 in df.iterrows():
+			print 'Running for '+ str(row2['NAME'])
+			url = 'https://appfeeds.moneycontrol.com//jsonapi//stocks//graph&format=json&range=max&type=area&ex=&sc_id='+str(row2['NAME'])
 			rcomp = requests.get(url, headers=headers)
 			data = json.loads(rcomp.text)
 			currentPrice = float(data['graph']['current_close'])
-			if shouldSell(currentPrice, float(row['PRICE']), datetime.strptime(row['DATE'], '%d %b %Y').date(), int(row['QTY'])):
-				sellList.append(row['NAME'])
-				sellAll(str(row['NAME']), currentPrice, int(row['QTY']), row['id'])
+			if shouldSell(currentPrice, float(row2['PRICE']), datetime.strptime(row2['DATE'], '%d %b %Y').date(), int(row2['QTY'])):
+				sellList.append(row2['NAME'])
+				sellAll(str(row2['NAME']), currentPrice, int(row2['QTY']), row['id'])
 			
 	#if len(sellList) is not 0:
 	#	utils.sendSMS('sell ', sellList)
