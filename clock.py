@@ -9,6 +9,7 @@ import ScoreBuyStocks
 import storeFinancials
 import generate_token
 import holdings
+import history
 logging.basicConfig()
 
 sched = BlockingScheduler()
@@ -38,9 +39,13 @@ def scheduled_job1():
 	generate_token.main()
 	print 'This job is run every weekday at 22:05.'
 
+@sched.scheduled_job('cron', day_of_week='mon-sun', hour=10, minute=05)
+def scheduled_job3():
+	history.main()
+	print 'This job is run every weekday at 18:05.'
 
 @sched.scheduled_job('cron', day_of_week='mon-sun', hour=11, minute=40)
-def scheduled_job1():
+def scheduled_job5():
 	storeFinancials.main()
 	print 'This job is run every weekday at 19:40.'
 	
