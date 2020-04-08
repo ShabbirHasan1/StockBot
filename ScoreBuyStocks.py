@@ -143,9 +143,15 @@ def getEPS(share, year, monthNum):
 	
 def getQuarterScore(share):
 	score = 0.0
+	count = 0
 	for item in financials:
 		score = score + getGrowthScore(share, item)
-	return score
+		count = count + 1
+		
+	if count == 0:
+		return 0.0
+	
+	return score/count
 
 def getValue(share, industry, ratio, ratioColumn):
 	year = 0
