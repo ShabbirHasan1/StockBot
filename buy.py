@@ -25,8 +25,9 @@ def getFund(id):
 def getInitial(id):
 	return float(dbconnect.readItem('BALANCE', 'INITIAL', 'ID', id))
 
-def removeFromCondition(item):
-	dbconnect.delete('CONDITION_BUY', 'STOCK', item)
+def removeFromCondition(item, id):
+	#dbconnect.delete('CONDITION_BUY', 'STOCK', item)
+	dbconnect.delete("CONDITION_BUY", "STOCK", item, "ID", id)
 	#df  = utils.readExcel("buywithcondition.xlsx")
 	#df = df[df['Stock'] != item]
 	#df.to_excel("buyWithCondition.xlsx",sheet_name='Sheet1',index=False)
@@ -81,7 +82,7 @@ def checkCondition(item, id):
 			print 'checking price'
 			if currentPrice < float(row['CPRICE']):
 				if (buyItem(item, getQty(currentPrice, id), currentPrice, id)):
-					removeFromCondition(item)
+					removeFromCondition(item, id)
 			return 1
 	return 0
 
@@ -108,9 +109,9 @@ def main():
 				
 		#df  = utils.readExcel("buyWithCondition.xlsx")
 		df = dbconnect.readAll("CONDITION_BUY", 'id', row['id'])
-		for index, row in df.iterrows():
-			if row['STOCK'] not in temp_list:
-				dbconnect.delete("CONDITION_BUY", "STOCK", row['STOCK'], "id", row['id'])
+		for indexc, rowc in df.iterrows():
+			if rowc['STOCK'] not in temp_list:
+				dbconnect.delete("CONDITION_BUY", "STOCK", rowc['STOCK'], "ID", row['id'])
 				#removeFromCondition(row['Stock'])
 			
 	print 'buy '+str(temp_list)
