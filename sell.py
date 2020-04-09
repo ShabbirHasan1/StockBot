@@ -49,7 +49,7 @@ def sellAll(item, price, qty, id):
 		print 'Sell Item :'+item+' | Qty :'+ str(qty)+' | Sell :'+str(price)
 		newBalance = float(balance) + (price*qty)
 		#utils.saveToFileItem(str(newBalance), 'balance.txt')
-		dbconnect.upsert("BALANCE", (str(id), str(newBalance), str(newBalance), initial) )
+		dbconnect.upsert("BALANCE", (str(id), str(newBalance), initial) )
 		buyDf = dbconnect.read("BUY")
 		temp_list = []
 		for index, row in buyDf.iterrows():

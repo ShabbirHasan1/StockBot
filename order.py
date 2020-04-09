@@ -12,8 +12,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 #token = str(utils.readText('access_token.txt')[0])
 
-token = dbconnect.readItem('TOKEN', 'VALUE', "ID", "1")
-kite = KiteConnect(api_key="6m485o0cpsicqsw7", access_token=token)
+
 	
 def getMappedSymbol(stock):
 	df = utils.readExcel('stock-unique.xlsx')
@@ -65,11 +64,15 @@ def place_order(stock, type, qty, id):
 # Fetch all orders
 #kite.orders()
 
-def getInstruments():
+def getInstruments(id):
+	token = dbconnect.readItem('TOKEN', 'VALUE', "ID", id)
+	kite = KiteConnect(api_key="6m485o0cpsicqsw7", access_token=token)
 	# Get instruments
 	return kite.instruments()
 	
-def getHoldings():
+def getHoldings(id):
+	token = dbconnect.readItem('TOKEN', 'VALUE', "ID", id)
+	kite = KiteConnect(api_key="6m485o0cpsicqsw7", access_token=token)
 	# Get instruments
 	try: 
 		return kite.holdings()

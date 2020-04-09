@@ -5,7 +5,7 @@ import order
 
 def main():
 	try:
-		print order.getInstruments()
+		print order.getInstruments('1')
 	except kiteconnect.exceptions.TokenException as e:
 		generate_token.main()
 	except kiteconnect.exceptions.PermissionException as e:
