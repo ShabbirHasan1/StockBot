@@ -31,7 +31,7 @@ def getReturn(currentPrice, purchasePrice):
 
 def shouldSell(currentPrice, purchasePrice, purchaseDate, quantity):
 	#sell if annual return is more than 105%
-	if getReturn(currentPrice, purchasePrice) > 1.05:
+	if utils.getDays(purchaseDate, '%d %b %Y') > 2 and getReturn(currentPrice, purchasePrice) > 1.05:
 		return 1
 	
 	return 0
@@ -81,7 +81,7 @@ def main():
 			rcomp = requests.get(url, headers=headers)
 			data = json.loads(rcomp.text)
 			currentPrice = float(data['graph']['current_close'])
-			if shouldSell(currentPrice, float(row2['PRICE']), datetime.strptime(row2['DATE'], '%d %b %Y').date(), int(row2['QTY'])):
+			if shouldSell(currentPrice, float(row2['PRICE']), row2['DATE'], int(row2['QTY'])):
 				sellList.append(row2['NAME'])
 				sellAll(str(row2['NAME']), currentPrice, int(row2['QTY']), row['id'])
 			
