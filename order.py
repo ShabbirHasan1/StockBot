@@ -29,6 +29,7 @@ def getNSESymbol(stock):
 
 def place_order(stock, type, qty, id):
 	token = dbconnect.readItem('TOKEN', 'VALUE', "ID", id)
+	acctType = dbconnect.readItem('ACCOUNT','TYPE','ID',id)
 	kite = KiteConnect(api_key="6m485o0cpsicqsw7", access_token=token)
 	symbol = getNSESymbol(stock)
 	if type == "B":
@@ -38,7 +39,7 @@ def place_order(stock, type, qty, id):
 	
 	# Place an order
 	try:
-		if (id=='1'):
+		if (acctType=='LIVE'):
 			order_id = kite.place_order(tradingsymbol=symbol, exchange=kite.EXCHANGE_NSE,transaction_type=trans,quantity=qty,order_type=kite.ORDER_TYPE_MARKET,product=kite.PRODUCT_CNC, variety=kite.VARIETY_REGULAR)			
 			logging.info("Order placed. ID is: {}".format(order_id))
 			logging.info("Order placed: {}".format(str(symbol) + " | "+str(type)+" | "+ str(qty)))
@@ -49,16 +50,6 @@ def place_order(stock, type, qty, id):
 			print 'order placed'
 			return 1
 	except Exception as e:
-		try:
-			token = dbconnect.readItem('TOKEN', 'VALUE', "ID", 1)
-			kite = KiteConnect(api_key="6m485o0cpsicqsw7", access_token=token)
-			order_id = kite.place_order(tradingsymbol=symbol, exchange=kite.EXCHANGE_NSE,transaction_type=trans,quantity=qty,order_type=kite.ORDER_TYPE_MARKET,product=kite.PRODUCT_CNC, variety=kite.VARIETY_REGULAR)
-	
-			logging.info("Order placed. ID is: {}".format(order_id))
-			logging.info("Order placed: {}".format(str(symbol) + " | "+str(type)+" | "+ str(qty)))
-			print 'order placed'
-			return 1
-		except Exception as e:
 			logging.info("Order placement failed: {}".format(e.message))
 			return 0
 # Fetch all orders
