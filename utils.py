@@ -223,3 +223,13 @@ def hasItem(text, file, column):
 		if str(row[column]) == text:
 			return True
 	return False
+	
+def getZerodhaPrice(price, qty, type):
+	CTT = price*qty*0.001
+	trans = price*qty*0.0000325
+	GST = 0.18*(CTT+trans)
+	if type == "B":
+		return (price + CTT+trans+GST)/qty
+	else:
+		return (price - (CTT+trans+GST))/qty
+	

@@ -8,7 +8,7 @@ import os
 import dbconnect
 logging.basicConfig(level=logging.DEBUG)
 
-def main():
+def generate(id, username, password, pin):
 	kite = KiteConnect(api_key="6m485o0cpsicqsw7")
 
 
@@ -33,8 +33,8 @@ def main():
 	username = driver.find_element_by_xpath('//*[@id="container"]/div/div/div[2]/form/div[1]/input')
 	password = driver.find_element_by_xpath('//*[@id="container"]/div/div/div[2]/form/div[2]/input')
 
-	username.send_keys("VM3521")
-	password.send_keys("Crashing@1")
+	username.send_keys(username)
+	password.send_keys(password)
 
 	driver.find_element_by_xpath('/html/body/div[1]/div/div[2]/div[1]/div/div/div[2]/form/div[4]/button').click()
 
@@ -43,7 +43,7 @@ def main():
 
 	Security1 = driver.find_element_by_xpath('//*[@id="container"]/div/div/div[2]/form/div[2]/div/input')
 
-	Security1.send_keys("670594")
+	Security1.send_keys(pin)
 
 	driver.find_element_by_xpath('/html/body/div[1]/div/div[2]/div[1]/div/div/div[2]/form/div[3]/button').click()
 
@@ -69,8 +69,13 @@ def main():
 	data = kite.generate_session(token, api_secret="2h2k6kqpio3xyigxtlor49pcx1g6ofoo")
 	print 'Saving token '+str(data["access_token"])
 	#utils.saveToFileItem(str(data["access_token"]), 'access_token.txt')
-	dbconnect.upsert('TOKEN',(1, str(data["access_token"])))
+	dbconnect.upsert('TOKEN',(id, str(data["access_token"])))
 	#kite.set_access_token(data["access_token"])
+
+def main():
+	df = dbconnect.readAll('ACCOUNT', 'TYPE', 'LIVE')
+	for index, row in df.iterrows():
+		generate(row['ID'], row['USERNAME'], row['PASSWORD'], row['PIN'])
 
 if __name__ == "__main__":
     main()

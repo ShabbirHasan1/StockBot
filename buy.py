@@ -61,14 +61,16 @@ def buyItem(item, qty, price, id):
 		
 		status = order.place_order(item, "B", qty, id)
 		if status == 1:
+			price = utils.getZerodhaPrice(price, qty, "B")
 			print 'Buy Item :'+item+' | Qty :'+str(qty)+' | Purchase :'+ str(price)
 			balance = utils.getFund(id)
 			balance = balance - (price*qty)
-			dbconnect.upsert("BALANCE", (str(id), str(balance), str(initial)) )
+			
 			#utils.saveToFileItem(str(balance), 'balance.txt')
 			if qty > 0:
 				#ws.append(row_data)
 				#wb.save("boughtList.xlsx")
+				dbconnect.upsert("BALANCE", (str(id), str(balance), str(initial)) )
 				dbconnect.upsert("BOUGHT_LIST", row_data)
 			return 1
 	return 0

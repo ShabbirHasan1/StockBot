@@ -46,6 +46,7 @@ def sellAll(item, price, qty, id):
 	
 	status = order.place_order(item, "S", qty, id)
 	if status==1:
+		price = utils.getZerodhaPrice(price, qty, "S")
 		print 'Sell Item :'+item+' | Qty :'+ str(qty)+' | Sell :'+str(price)
 		newBalance = float(balance) + (price*qty)
 		#utils.saveToFileItem(str(newBalance), 'balance.txt')
