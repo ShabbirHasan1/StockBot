@@ -34,15 +34,20 @@ def timed_job():
 	print('This job is run every ten minutes.')
 
 
-@sched.scheduled_job('cron', day_of_week='mon-sun', hour=14, minute=05)
-def scheduled_job1():
-	generate_token.main()
-	print 'This job is run every weekday at 22:05.'
+#@sched.scheduled_job('cron', day_of_week='mon-sun', hour=14, minute=05)
+#def scheduled_job1():
+#	generate_token.main()
+#	print 'This job is run every weekday at 22:05.'
 
 @sched.scheduled_job('cron', day_of_week='mon-sun', hour=10, minute=05)
 def scheduled_job3():
 	history.main()
 	print 'This job is run every weekday at 18:05.'
+	
+@sched.scheduled_job('cron', day_of_week='mon-sun', hour=12, minute=10)
+def scheduled_job5():
+	generate_token.main()
+	print 'This job is run every weekday at 20:10.'
 
 @sched.scheduled_job('cron', day_of_week='mon-sun', hour=11, minute=40)
 def scheduled_job5():
