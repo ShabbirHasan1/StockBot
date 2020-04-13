@@ -27,7 +27,7 @@ def upsertList(conn, table, items):
 	conn.commit()
 	
 def upsertDF(table, df):
-	engine = create_engine("mysql://b3386ea5051315:dbe2db2d@us-cdbr-iron-east-04.cleardb.net/heroku_6080183310e92dc")
+	engine = create_engine("mysql://b865f30025a702:302c55ae@us-cdbr-iron-east-01.cleardb.net/heroku_25570552915163b")
 	connection = engine.connect()
 	df.to_sql(con=engine, name=table, if_exists='replace', index=False)
 	#conn.commit()
