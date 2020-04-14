@@ -57,9 +57,9 @@ trendMap = my_dictionary()
 priceMap = my_dictionary()
 topBuyList = {}
 
-TRENDWEIGHT = 0.3
+TRENDWEIGHT = 0.2
 IAVGWEIGHT = 0.05
-MEDIANWEIGHT = 0.3
+MEDIANWEIGHT = 0.4
 PERATIOWEIGHT = 0.05
 NEWSWEIGHT = 0.1
 QUARTERWEIGHT = 0.2
@@ -290,7 +290,7 @@ def main():
 			utils.loadingBar(count, totalStock, 10)
 			count = count + 1
 			currentPrice = priceMap[str(row['id'])]
-			row_data = [None] * 9
+			row_data = [None] * 10
 			row_data[0] = str(row['id'])
 			row_data[1] = str(row['sector'])
 			
@@ -325,6 +325,7 @@ def main():
 			if currentPrice <5.0:
 				total = total - 1.0
 			row_data[8] = str(total)
+			row_data[9] = str(date.today().strftime('%d %b %Y'))
 			#ws.append(row_data)
 			try:
 				dbconnect_new.upsert("Scores", row_data)

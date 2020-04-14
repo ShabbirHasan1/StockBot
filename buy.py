@@ -95,27 +95,28 @@ def checkCondition(item, id):
 # 3) Don't buy if stock is already in the boughtList
 def main():
 	#buyList = utils.readText('buy.txt')
-	buyDf = dbconnect.read("BUY")
+	buyDf = dbconnect.readAll("BUY", "DATE", "'"+str(date.today().strftime('%d %b %Y'))+"'")
 	temp_list = []
-	for index, row in buyDf.iterrows():
-		if index == 0:
-			temp_list = [row.ITEM1, row.ITEM2, row.ITEM3, row.ITEM4, row.ITEM5]
+	if buyDf.size > 0:
+		for index, row in buyDf.iterrows():
+			if index == 0:
+				temp_list = [row.ITEM1, row.ITEM2, row.ITEM3, row.ITEM4, row.ITEM5]
 	
-	userDf = dbconnect.read('user')
-	for index, row in userDf.iterrows():
-		for item in temp_list:
-			currentPrice = getPrice(item)
-			if dbconnect.hasItem(item, row['id'], 'BOUGHT_LIST', 'NAME', 'ID'):
-				continue
-			elif checkCondition(item, row['id']) == 0:
-				buyItem(item, getQty(currentPrice, row['id']), currentPrice, row['id'])
+		userDf = dbconnect.read('user')
+		for index, row in userDf.iterrows():
+			for item in temp_list:
+				currentPrice = getPrice(item)
+				if dbconnect.hasItem(item, row['id'], 'BOUGHT_LIST', 'NAME', 'ID'):
+					continue
+				elif checkCondition(item, row['id']) == 0:
+					buyItem(item, getQty(currentPrice, row['id']), currentPrice, row['id'])
 				
-		#df  = utils.readExcel("buyWithCondition.xlsx")
-		df = dbconnect.readAll("CONDITION_BUY", 'id', row['id'])
-		for indexc, rowc in df.iterrows():
-			if rowc['STOCK'] not in temp_list:
-				dbconnect.delete("CONDITION_BUY", "STOCK", rowc['STOCK'], "ID", row['id'])
-				#removeFromCondition(row['Stock'])
+			#df  = utils.readExcel("buyWithCondition.xlsx")
+			df = dbconnect.readAll("CONDITION_BUY", 'id', row['id'])
+			for indexc, rowc in df.iterrows():
+				if rowc['STOCK'] not in temp_list:
+					dbconnect.delete("CONDITION_BUY", "STOCK", rowc['STOCK'], "ID", row['id'])
+					#removeFromCondition(row['Stock'])
 			
 	print 'buy '+str(temp_list)
 	

@@ -20,7 +20,7 @@ def upsertList(conn, table, items):
 	text = text[:-1]
 	#items.insert(0,1)
 	
-	query_string = "REPLACE INTO "+ table + " VALUES (1,'"+ today+"',"+text+")"
+	query_string = "REPLACE INTO "+ table + " VALUES ('"+ today+"',"+text+")"
 	print query_string
 	cursor.execute(query_string)
 	conn.commit()
@@ -74,6 +74,7 @@ def readAll(conn, table, column, item):
 	query_string = "SELECT * FROM "+table+" WHERE "+ column+ " = "+str(item)+""
 	df = pd.read_sql_query(query_string, conn)
 	return df
+
 
 @db_connector
 def delete(conn, table, column, item, column2, item2):
