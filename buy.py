@@ -72,6 +72,7 @@ def buyItem(item, qty, price, id):
 				#wb.save("boughtList.xlsx")
 				dbconnect.upsert("BALANCE", (str(id), str(balance), str(initial)) )
 				dbconnect.upsert("BOUGHT_LIST", row_data)
+				dbconnect.upsert("LOG", (str(id), str(item), str(qty), str(price), str(date.today().strftime('%d %b %Y')), "B" ))
 			return 1
 	return 0
 

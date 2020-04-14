@@ -8,7 +8,7 @@ import os
 import dbconnect
 logging.basicConfig(level=logging.DEBUG)
 
-def generate(id, username, password, pin):
+def generate(id, usern, passw, pin):
 	kite = KiteConnect(api_key="6m485o0cpsicqsw7")
 
 
@@ -33,8 +33,8 @@ def generate(id, username, password, pin):
 	username = driver.find_element_by_xpath('//*[@id="container"]/div/div/div[2]/form/div[1]/input')
 	password = driver.find_element_by_xpath('//*[@id="container"]/div/div/div[2]/form/div[2]/input')
 
-	username.send_keys(username)
-	password.send_keys(password)
+	username.send_keys(usern)
+	password.send_keys(passw)
 
 	driver.find_element_by_xpath('/html/body/div[1]/div/div[2]/div[1]/div/div/div[2]/form/div[4]/button').click()
 

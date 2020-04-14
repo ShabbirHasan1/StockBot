@@ -66,6 +66,7 @@ def sellAll(item, price, qty, id):
 				dbconnect.upsert('CONDITION_BUY', row_data)
 				
 		dbconnect.delete('BOUGHT_LIST', 'NAME', item, "ID", str(id))
+		dbconnect.upsert("LOG", (str(id), str(item), str(qty), str(price), str(date.today().strftime('%d %b %Y')), "S" ))
 	
 def main():
 	#main function

@@ -22,6 +22,9 @@ from email.utils import formatdate
 from email import encoders
 import dbconnect
 
+def getNSESymbol(stock):
+	return dbconnect.readItemWhere('stock', 'nseid', stock)
+
 def loadingBar(count,total,size):
 	percent = float(count)/float(total)*100
 	print str(int(count)).rjust(3,'0')+"/"+str(int(total)).rjust(3,'0') + ' [' + '='*int(percent/10)*size + ' '*(10-int(percent/10))*size + ']'
@@ -60,7 +63,7 @@ def sendSMS(message, itemList):
 
 	#adding the new shares to be bought
 	for item in itemList:
-		SMS = SMS + getShareName(item) + ','
+		SMS = SMS + getNSESymbol(item) + ','
 			
 	notify = Notify()
 	notify.send(SMS)
@@ -229,7 +232,7 @@ def getZerodhaPrice(price, qty, type):
 	trans = price*qty*0.0000325
 	GST = 0.18*(CTT+trans)
 	if type == "B":
-		return (price + CTT+trans+GST)/qty
+		return price + (CTT+trans+GST)/qty
 	else:
-		return (price - (CTT+trans+GST))/qty
+		return price - (CTT+trans+GST)/qty
 	
