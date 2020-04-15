@@ -31,7 +31,7 @@ def getReturn(currentPrice, purchasePrice):
 
 def shouldSell(currentPrice, purchasePrice, purchaseDate, quantity):
 	#sell if annual return is more than 105%
-	if utils.getDays(purchaseDate, '%d %b %Y') > 2 and getReturn(currentPrice, purchasePrice) > 1.05:
+	if ((utils.getDays(purchaseDate, '%d %b %Y') > 1) and getReturn(currentPrice, purchasePrice) > 1.05):
 		return 1
 	
 	return 0
