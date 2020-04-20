@@ -48,7 +48,7 @@ def getPrice(item):
 
 def buyItem(item, qty, price, id):
 	initial = getInitial(id)
-	if getFund(id) > initial/6.0:
+	if (getFund(id) > initial/6.0) and qty>0:
 		print 'Buying item'
 		#wb = load_workbook("boughtList.xlsx")
 		#ws = wb.worksheets[0]
