@@ -67,6 +67,12 @@ def sendSMS(message, itemList):
 			
 	notify = Notify()
 	notify.send(SMS)
+	
+def sendSMS2(message1, message2):
+	os.system("notify-run configure -f https://notify.run/hRtUrGQaxEM0l3VR")
+			
+	notify = Notify()
+	notify.send(message1+ message2)
 
 def saveToFile(itemList, filename):
 	with open(filename, 'w') as f:

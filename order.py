@@ -11,7 +11,7 @@ import dbconnect5
 logging.basicConfig(level=logging.DEBUG)
 
 #token = str(utils.readText('access_token.txt')[0])
-
+STATUS = 'INACTIVE'
 
 	
 def getMappedSymbol(stock):
@@ -40,11 +40,15 @@ def place_order(stock, type, qty, id):
 	# Place an order
 	try:
 		if (acctType=='LIVE'):
-			order_id = kite.place_order(tradingsymbol=symbol, exchange=kite.EXCHANGE_NSE,transaction_type=trans,quantity=qty,order_type=kite.ORDER_TYPE_MARKET,product=kite.PRODUCT_CNC, variety=kite.VARIETY_REGULAR)			
-			logging.info("Order placed. ID is: {}".format(order_id))
-			logging.info("Order placed: {}".format(str(symbol) + " | "+str(type)+" | "+ str(qty)))
-			print 'order placed'
-			return 1
+			if (STATUS=='ACTIVE'):
+				order_id = kite.place_order(tradingsymbol=symbol, exchange=kite.EXCHANGE_NSE,transaction_type=trans,quantity=qty,order_type=kite.ORDER_TYPE_MARKET,product=kite.PRODUCT_CNC, variety=kite.VARIETY_REGULAR)			
+				logging.info("Order placed. ID is: {}".format(order_id))
+				logging.info("Order placed: {}".format(str(symbol) + " | "+str(type)+" | "+ str(qty)))
+				print 'order placed'
+				return 1
+			else:
+				utils.sendSMS2(str(type)+" ", str(symbol)+" "+str(qty))
+				return 1
 		else:
 			logging.info("Order placed: {}".format(str(symbol) + " | "+str(type)+" | "+ str(qty)))
 			print 'order placed'
