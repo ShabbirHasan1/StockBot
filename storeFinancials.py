@@ -141,7 +141,7 @@ def main():
 			
 				# Append Row Values
 				try:
-					dbconnect5.upsertsingle("`TABLE 1`", row_data)
+					dbconnect5.insertsingle("`TABLE 1`", row_data)
 					time.sleep(5)
 				except Exception as e:
 					if e.errno == 1062:
@@ -149,7 +149,7 @@ def main():
 					else:
 						print e
 						time.sleep(3700)
-						dbconnect5.upsertsingle("`TABLE 1`", row_data)
+						dbconnect5.insertsingle("`TABLE 1`", row_data)
 				#ws.append(row_data)
 		except Exception as e:
 			print e
