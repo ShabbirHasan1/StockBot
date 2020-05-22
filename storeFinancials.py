@@ -135,7 +135,8 @@ def main():
 						row_data[index] = '--'
 					else:
 						row_data[index] = str(result['value']).replace(',', '')
-
+				
+				#row_data[62] = "NOW()"
 			
 				# Append Row Values
 				try:

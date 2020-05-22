@@ -27,6 +27,7 @@ def upsertsingle(conn, table, items):
 	#var_string = ', '.join('?' * len(items))
 	#query_string = 'REPLACE INTO '+ table+ ' VALUES (%s);' % var_string
 	query_string = "REPLACE INTO "+ table+" VALUES %s;" % (tuple(items),)
+	query_string = query_string.replace(")", ",NULL)")
 	print query_string
 	#cursor.executemany(query_string, items)
 	cursor.execute(query_string)
