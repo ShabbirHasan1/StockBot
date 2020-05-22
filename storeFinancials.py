@@ -18,6 +18,7 @@ import dbconnect
 import dbconnect5
 from openpyxl import load_workbook
 import time
+from mysql.connector import errorcode
 
 def getKey(ratio):
 	switcher={
@@ -143,9 +144,12 @@ def main():
 					dbconnect5.upsertsingle("`TABLE 1`", row_data)
 					time.sleep(5)
 				except Exception as e:
-					print e
-					time.sleep(3700)
-					dbconnect5.upsertsingle("`TABLE 1`", row_data)
+					if e.errno == 1062:
+						continue
+					else:
+						print e
+						time.sleep(3700)
+						dbconnect5.upsertsingle("`TABLE 1`", row_data)
 				#ws.append(row_data)
 		except Exception as e:
 			print e
