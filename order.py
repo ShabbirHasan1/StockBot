@@ -8,7 +8,6 @@ import urlparse
 import dbconnect
 import dbconnect5
 from nsetools import Nse
-nse = Nse()
 logging.basicConfig(level=logging.DEBUG)
 
 #token = str(utils.readText('access_token.txt')[0])
@@ -29,6 +28,7 @@ def getNSESymbol(stock):
 
 
 def checkQuantity(symbol, type):
+	nse = Nse()
 	q = nse.get_quote(symbol)
 	if type == "B":
 		qty = q['totalSellQuantity']
