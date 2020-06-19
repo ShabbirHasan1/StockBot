@@ -51,7 +51,7 @@ def sellAll(item, price, qty, id):
 		newBalance = float(balance) + (price*qty)
 		#utils.saveToFileItem(str(newBalance), 'balance.txt')
 		dbconnect.upsert("BALANCE", (str(id), str(newBalance), initial) )
-		buyDf = dbconnect.read("BUY")
+		buyDf = dbconnect.readAll("BUY", "DATE", "'"+str(date.today().strftime('%d %b %Y'))+"'")
 		temp_list = []
 		for index, row in buyDf.iterrows():
 			if index == 0:
