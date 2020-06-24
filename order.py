@@ -29,7 +29,9 @@ def getNSESymbol(stock):
 
 def checkQuantity(symbol, type):
 	nse = Nse()
+	print 'one'
 	q = nse.get_quote(symbol)
+	print q
 	if type == "B":
 		qty = q['totalSellQuantity']
 	if type == "S":
