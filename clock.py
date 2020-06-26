@@ -60,7 +60,7 @@ def scheduled_job4():
 	Median.main()
 	print 'This job is run every weekday at 3:45 am.'
 	
-@sched.scheduled_job('cron', day_of_week='mon-sun', hour=22, minute=40)
+@sched.scheduled_job('cron', day_of_week='mon-sun', hour=20, minute=00)
 def scheduled_job2():
 	ScoreBuyStocks.main()
 	print 'This job is run every weekday at 04:00.'

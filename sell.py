@@ -71,10 +71,7 @@ def sellAll(item, price, qty, id):
 	
 def main():
 	#main function
-	#nse = Nse()
-	#print 'one'
-	#q = nse.get_quote('INFY')
-	#print q['totalSellQuantity']
+	
 	headers = {'authorization': "Basic API Key Ommitted", 'accept': "application/json", 'accept': "text/csv"}
 	print "Running seller"
 	#df = utils.readExcel('boughtList.xlsx')

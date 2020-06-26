@@ -7,7 +7,6 @@ import requests
 import urlparse
 import dbconnect
 import dbconnect5
-from nsetools import Nse
 logging.basicConfig(level=logging.DEBUG)
 
 #token = str(utils.readText('access_token.txt')[0])
@@ -27,22 +26,6 @@ def getNSESymbol(stock):
 	return dbconnect.readItemWhere('stock', 'nseid', stock)
 
 
-def checkQuantity(symbol, type):
-	nse = Nse()
-	print 'one'
-	q = nse.get_quote(symbol)
-	print q
-	if type == "B":
-		qty = q['totalSellQuantity']
-	if type == "S":
-		qty = q['totalBuyQuantity']
-	
-	print 'Qty: '+str(qty)+' for '+symbol
-	if qty == None:
-		return False
-	else:
-		return True
-
 def place_order(stock, type, qty, id):
 	token = dbconnect.readItem('TOKEN', 'VALUE', "ID", id)
 	acctType = dbconnect.readItem('ACCOUNT','TYPE','ID',id)
@@ -53,29 +36,29 @@ def place_order(stock, type, qty, id):
 	if type == "S":
 		trans = kite.TRANSACTION_TYPE_SELL
 	
-	#if checkQuantity(symbol, type):
+	if utils.checkQuantity(stock, type):
 		# Place an order
-	try:
-		if (acctType=='LIVE'):
-			if (STATUS=='ACTIVE'):
-				order_id = kite.place_order(tradingsymbol=symbol, exchange=kite.EXCHANGE_NSE,transaction_type=trans,quantity=qty,order_type=kite.ORDER_TYPE_MARKET,roduct=kite.PRODUCT_CNC, variety=kite.VARIETY_REGULAR)			
-				logging.info("Order placed. ID is: {}".format(order_id))
+		try:
+			if (acctType=='LIVE'):
+				if (STATUS=='ACTIVE'):
+					order_id = kite.place_order(tradingsymbol=symbol, exchange=kite.EXCHANGE_NSE,transaction_type=trans,quantity=qty,order_type=kite.ORDER_TYPE_MARKET,roduct=kite.PRODUCT_CNC, variety=kite.VARIETY_REGULAR)			
+					logging.info("Order placed. ID is: {}".format(order_id))
+					logging.info("Order placed: {}".format(str(symbol) + " | "+str(type)+" | "+ str(qty)))
+					print 'order placed'
+					return 1
+				else:
+					utils.sendSMS2(str(type)+" ", str(symbol)+" "+str(qty))
+					return 1
+			else:
 				logging.info("Order placed: {}".format(str(symbol) + " | "+str(type)+" | "+ str(qty)))
 				print 'order placed'
 				return 1
-			else:
-				utils.sendSMS2(str(type)+" ", str(symbol)+" "+str(qty))
-				return 1
-		else:
-			logging.info("Order placed: {}".format(str(symbol) + " | "+str(type)+" | "+ str(qty)))
-			print 'order placed'
-			return 1
-	except Exception as e:
-			logging.info("Order placement failed: {}".format(e.message))
-			return 0
-	#else:
-	#	logging.info("Order placement failed: Quantity not satisfied")
-	#	return 0
+		except Exception as e:
+				logging.info("Order placement failed: {}".format(e.message))
+				return 0
+	else:
+		logging.info("Order placement failed: Quantity not satisfied")
+		return 0
 # Fetch all orders
 #kite.orders()
 

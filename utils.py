@@ -21,6 +21,7 @@ from email.mime.text import MIMEText
 from email.utils import formatdate
 from email import encoders
 import dbconnect
+from nsetools import Nse
 
 def getNSESymbol(stock):
 	return dbconnect.readItemWhere('stock', 'nseid', stock)
@@ -242,3 +243,20 @@ def getZerodhaPrice(price, qty, type):
 	else:
 		return price - (CTT+trans+GST)/qty
 	
+def checkQuantity(symbol, type):
+	url = 'https://www.moneycontrol.com/news18/stocks/overview/'+str(symbol)+'/N'
+	headers = {'authorization': "Basic API Key Ommitted", 'accept': "application/json", 'accept': "text/csv"}
+
+	rcomp = requests.get(url, headers=headers)
+	data = json.loads(rcomp.text)
+	
+	if type == "B":
+		qty = data['NSE']['offerqty']
+	if type == "S":
+		qty = data['NSE']['bidqty']
+	
+	print 'Qty: '+str(qty)+' for '+symbol
+	if float(qty) == 0:
+		return False
+	else:
+		return True
