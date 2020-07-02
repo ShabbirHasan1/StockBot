@@ -239,7 +239,7 @@ def main():
 
 	print 'Running stock scoring'
 	#read list of all stock
-	#df = utils.readExcel('stock-unique.xlsx')
+	#df = utils.readExcel('stock-unique-dummy.xlsx')
 	df = dbconnect.read('stock')
 	averageList = my_dictionary()
 	countList = my_dictionary()
@@ -341,18 +341,30 @@ def main():
 			print e
 			continue
 	
-	#find top buy list
-	topBuyList = dict(Counter(buyList).most_common(5))
-	#utils.saveToFile(topBuyList, 'buy.txt')
 	
-	dbconnect.upsertList("BUY", topBuyList)
+	#find top buy list
+	topBuyList = dict(Counter(buyList).most_common(10))
+	#utils.saveToFile(topBuyList, 'buy.txt')
+	print topBuyList
+	
+	finalList = my_dictionary()
+	count = 0
+	
+	for item,value in topBuyList.items():
+		if utils.checkQuantity(item, "B"):
+			finalList.add(item, value)
+			count = count + 1
+		if count == 5:
+			break
+	
+	#dbconnect.upsertList("BUY", finalList)
 	
 		
 	#wb.save("Scores.xlsx")
 	print 'Top shares to be bought are:'
-	print topBuyList
+	print finalList
 	
-	utils.sendSMS('buy ', topBuyList)
+	utils.sendSMS('buy ', finalList)
 	#try:
 	#	utils.send_mail('sukrit.raghuvanshi1990@gmail.com','sukrit.raghuvanshi1990@gmail.com','Scores','PFA','Scores.xlsx','smtp.gmail.com',587,'sukrit.raghuvanshi1990','Crashing@1',True)
 	#except Exception as e:
