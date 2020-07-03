@@ -261,3 +261,21 @@ def checkQuantity(symbol, type):
 		return False
 	else:
 		return True
+		
+def checkcircuit(symbol, type):
+	url = 'https://www.moneycontrol.com/news18/stocks/overview/'+str(symbol)+'/N'
+	headers = {'authorization': "Basic API Key Ommitted", 'accept': "application/json", 'accept': "text/csv"}
+
+	rcomp = requests.get(url, headers=headers)
+	data = json.loads(rcomp.text)
+	
+	if type == "B":
+		if float(data['NSE']['lcprice']) == float(float(data['NSE']['offerprice'])):
+			return False
+		else:
+			return True
+	if type == "S":
+		if float(data['NSE']['ucprice']) == float(float(data['NSE']['bidprice'])):
+			return False
+		else:
+			return True

@@ -343,7 +343,7 @@ def main():
 	
 	
 	#find top buy list
-	topBuyList = dict(Counter(buyList).most_common(10))
+	topBuyList = dict(Counter(buyList).most_common(15))
 	#utils.saveToFile(topBuyList, 'buy.txt')
 	print topBuyList
 	
@@ -351,7 +351,7 @@ def main():
 	count = 0
 	
 	for item,value in topBuyList.items():
-		if utils.checkQuantity(item, "B"):
+		if utils.checkQuantity(item, "B") and utils.checkcircuit(item, "B"):
 			finalList.add(item, value)
 			count = count + 1
 		if count == 5:
