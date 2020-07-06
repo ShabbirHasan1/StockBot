@@ -357,7 +357,7 @@ def main():
 		if count == 5:
 			break
 	
-	#dbconnect.upsertList("BUY", finalList)
+	dbconnect.upsertList("BUY", finalList)
 	
 		
 	#wb.save("Scores.xlsx")
