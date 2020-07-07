@@ -347,24 +347,23 @@ def main():
 	#utils.saveToFile(topBuyList, 'buy.txt')
 	print topBuyList
 	
-	finalList = my_dictionary()
+	finalList = []
 	count = 0
 	
 	for item,value in topBuyList.items():
 		if utils.checkQuantity(item, "B") and utils.checkcircuit(item, "B"):
-			finalList.add(item, value)
+			finalList.append(item)
 			count = count + 1
 		if count == 5:
 			break
 	
-	dbconnect.upsertList("BUY", finalList)
-	
-		
-	#wb.save("Scores.xlsx")
 	print 'Top shares to be bought are:'
 	print finalList
 	
 	utils.sendSMS('buy ', finalList)
+	
+	dbconnect.upsertList("BUY", finalList)
+	
 	#try:
 	#	utils.send_mail('sukrit.raghuvanshi1990@gmail.com','sukrit.raghuvanshi1990@gmail.com','Scores','PFA','Scores.xlsx','smtp.gmail.com',587,'sukrit.raghuvanshi1990','Crashing@1',True)
 	#except Exception as e:
