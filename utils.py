@@ -28,7 +28,7 @@ def getNSESymbol(stock):
 
 def loadingBar(count,total,size):
 	percent = float(count)/float(total)*100
-	print str(int(count)).rjust(3,'0')+"/"+str(int(total)).rjust(3,'0') + ' [' + '='*int(percent/10)*size + ' '*(10-int(percent/10))*size + ']'
+	print (str(int(count)).rjust(3,'0')+"/"+str(int(total)).rjust(3,'0') + ' [' + '='*int(percent/10)*size + ' '*(10-int(percent/10))*size + ']')
 
 def drawProgressBar(percent, barLen = 20):
 	#os.system("notify-run configure -f https://notify.run/hRtUrGQaxEM0l3VR")
@@ -45,14 +45,14 @@ def drawProgressBar(percent, barLen = 20):
 
 
 def upsert(dic, key):
-	if dic.has_key(key):
+	if key in dic:
 		dic[key] = dic[key] + 1
 	else:
 		dic[key] = 0
 	return dic
 
 def upsertAverage(dic, key, value, count):
-	if dic.has_key(key):
+	if key in dic:
 		dic[key] = (dic[key]*(count-1)+value)/count
 	else:
 		dic[key] = value
@@ -105,7 +105,7 @@ def deleteContent(fName):
 def inDayRange(time, days):
 	today = date.today()
 	#date = today.strftime("%d %b %Y")
-	date_object = datetime.strptime(time, '%d %b %Y').date()
+	date_object = datetime.strptime(time, '%Y-%m-%d').date()
 	delta = today - date_object;
 	if delta.days > days:
 		return 0
@@ -123,10 +123,25 @@ def getAverage(data, days):
 	sum = 0.0
 	count = 0
 	for row in data:
-		if inDayRange(row.get('_time'), days):
-			sum = sum + float(row.get('_value'))
+		if inDayRange(row.get('date'), days):
+			sum = sum + float(row.get('close'))
 			count = count + 1;
 	return sum/count
+	
+#defining Q2 (jan-mar) 2020 as the starting point	
+def absoluteQuarter(year, period):
+	num = (year - 2020)*4
+	if period == 'Q2':
+		num = num + 1
+	if period == 'Q3':
+		num = num + 2
+	if period == 'Q4':
+		num = num + 3
+	else:
+		num = num + 4
+		
+	return num
+	
 	
 def getShareName(item):
 	return dbconnect.readItemWhere('stock', 'fullname', item)
@@ -153,6 +168,14 @@ def monthToNum(month):
 		'November' : 11,
 		'December' : 12
 }[month]
+
+def periodToNum(period):
+	return{
+		'Q1' : 1,
+		'Q2' : 2,
+		'Q3' : 3,
+		'Q4' : 4
+}[period]
 
 def send_mail(send_from,send_to,subject,text,files,server,port,username='',password='',isTls=True):
     msg = MIMEMultipart()
@@ -185,20 +208,21 @@ def normalizaScore(score, date):
 	return score - (score*maxDays/20.0)
 
 def getAlertScore(stock):
-	url = 'https://www.moneycontrol.com/news18/stocks/overview/'+str(stock)+'/N'
-	headers = {'authorization': "Basic API Key Ommitted", 'accept': "application/json", 'accept': "text/csv"}
+	return 0.0
+	# url = 'https://www.moneycontrol.com/news18/stocks/overview/'+str(stock)+'/N'
+	# headers = {'authorization': "Basic API Key Ommitted", 'accept': "application/json", 'accept': "text/csv"}
 
-	rcomp = requests.get(url, headers=headers)
-	data = json.loads(rcomp.text)
-	scoreNews = 0.0
-	try:
-		items = data['alerts']
-		for row in items: 
-			if str(row.get('title')) == 'News':
-				scoreNews = scoreNews + normalizaScore(newsRun.getNewsScore(str(stock), str(row.get('message'))), str(row.get('entdate')))		
-	except Exception as e:
-		print e
-	return scoreNews
+	# rcomp = requests.get(url, headers=headers)
+	# data = json.loads(rcomp.text)
+	# scoreNews = 0.0
+	# try:
+		# items = data['alerts']
+		# for row in items: 
+			# if str(row.get('title')) == 'News':
+				# scoreNews = scoreNews + normalizaScore(newsRun.getNewsScore(str(stock), str(row.get('message'))), str(row.get('entdate')))		
+	# except Exception as e:
+		# print (e)
+	# return scoreNews
 	
 def getBalance(id):
 	#balances = readText('balance.txt')
@@ -209,7 +233,7 @@ def getBalance(id):
 	df = dbconnect.readAll("BALANCE", 'ID', id)
 	for index, row in df.iterrows():
 		if index == 0:
-			print 'returning amount :'+ str(row['AMOUNT'])
+			print ('returning amount :'+ str(row['AMOUNT']))
 			return float(row['AMOUNT'])
 			
 	return 0.0
@@ -223,7 +247,7 @@ def getFund(id):
 	df = dbconnect.readAll("BALANCE", 'ID', id)
 	for index, row in df.iterrows():
 		if index == 0:
-			print 'returning amount :'+ str(row['FUND'])
+			print ('returning amount :'+ str(row['FUND']))
 			return float(row['FUND'])
 			
 	return 0.0
@@ -256,7 +280,7 @@ def checkQuantity(symbol, type):
 	if type == "S":
 		qty = data['NSE']['bidqty']
 	
-	print 'Qty: '+str(qty)+' for '+symbol
+	print ('Qty: '+str(qty)+' for '+symbol)
 	if float(qty) == 0:
 		return False
 	else:

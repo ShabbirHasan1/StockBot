@@ -1,17 +1,11 @@
-#!/usr/bin/python2.7
-import generate_token
-import kiteconnect
-import order
+from futu import *
 
-def main():
-	try:
-		print order.getHoldings('1')
-	except kiteconnect.exceptions.TokenException as e:
-		generate_token.generate('1', 'VM3521', 'Crashing@1', '670594')
-		print order.getHoldings('1')
-	except kiteconnect.exceptions.PermissionException as e:
-		generate_token.generate('1', 'VM3521', 'Crashing@1', '670594')
-		print order.getHoldings('1')
-		
-if __name__ == "__main__":
-    main()
+trd_ctx = OpenUSTradeContext(host='127.0.0.1', port=11111, security_firm=SecurityFirm.FUTUSG)
+ret, data = trd_ctx.accinfo_query()
+if ret == RET_OK:
+    print(data)
+    print(data['power'][0])  # Get the first buying power
+    print(data['power'].values.tolist())  # convert to list
+else:
+    print('accinfo_query error: ', data)
+trd_ctx.close()  # Close the current connection

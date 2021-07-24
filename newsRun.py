@@ -52,9 +52,9 @@ def main():
 		try:
 			if str(row['News']) == 'News':
 				score = getNewsScore(str(row['Stock']), str(row['Message']))
-				print str(row['Stock']) +' | '+ str(row['Message'])+' | '+str(score)
+				print (str(row['Stock']) +' | '+ str(row['Message'])+' | '+str(score))
 		except Exception as e:
-			print e
+			print (e)
 
 if __name__ == "__main__":
     main()

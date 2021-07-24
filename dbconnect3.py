@@ -21,7 +21,7 @@ def upsertList(conn, table, items):
 	#items.insert(0,1)
 	
 	query_string = "REPLACE INTO "+ table + " VALUES (1,'"+ today+"',"+text+")"
-	print query_string
+	print (query_string)
 	cursor.execute(query_string)
 	conn.commit()
 
@@ -31,7 +31,7 @@ def upsert(conn, table, items):
 	#var_string = ', '.join('?' * len(items))
 	#query_string = 'REPLACE INTO '+ table+ ' VALUES (%s);' % var_string
 	query_string = "REPLACE INTO "+ table+" VALUES %s;" % (tuple(items),)
-	print query_string
+	print (query_string)
 	#cursor.executemany(query_string, items)
 	cursor.execute(query_string)
 	#conn.commit()
@@ -48,14 +48,14 @@ def readItem(conn, table, column):
 	df = read(table)
 	for index, row in df.iterrows():
 		if index == 0:
-			print 'returning value :'+ str(row[column])
+			print ('returning value :'+ str(row[column]))
 			return str(row[column])
 
 @db_connector3
 def delete(conn, table, column, item):
 	cursor = conn.cursor()
 	query_string = "DELETE FROM "+ table+" WHERE "+column+" = '"+str(item)+"'"
-	print query_string
+	print (query_string)
 	cursor.execute(query_string, item)
 	conn.commit()
 

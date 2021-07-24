@@ -21,7 +21,7 @@ def upsertList(conn, table, items):
 	#items.insert(0,1)
 	
 	query_string = "REPLACE INTO "+ table + " VALUES ('"+ today+"',"+text+")"
-	print query_string
+	print (query_string)
 	cursor.execute(query_string)
 	conn.commit()
 
@@ -31,7 +31,7 @@ def upsertsingle(conn, table, items):
 	#var_string = ', '.join('?' * len(items))
 	#query_string = 'REPLACE INTO '+ table+ ' VALUES (%s);' % var_string
 	query_string = "REPLACE INTO "+ table+" VALUES %s;" % (tuple(items),)
-	print query_string
+	print (query_string)
 	#cursor.executemany(query_string, items)
 	cursor.execute(query_string)
 	conn.commit()
@@ -42,7 +42,7 @@ def upsert(conn, table, items):
 	#var_string = ', '.join('?' * len(items))
 	#query_string = 'REPLACE INTO '+ table+ ' VALUES (%s);' % var_string
 	query_string = "REPLACE INTO "+ table+" VALUES %s;" % (tuple(items),)
-	print query_string
+	print (query_string)
 	cursor.executemany(query_string, items)
 	conn.commit()
 	
@@ -58,7 +58,7 @@ def readItemWhere(conn, table, column, id):
 	df = read(table)
 	for index, row in df.iterrows():
 		if row['id'] == id:
-			print 'returning value :'+ str(row[column])
+			print ('returning value :'+ str(row[column]))
 			return str(row[column])
 
 @db_connector
@@ -66,7 +66,7 @@ def readItem(conn, table, column, column2, item2):
 	df = readAll(table, column2, item2)
 	for index, row in df.iterrows():
 		if index == 0:
-			print 'returning value :'+ str(row[column])
+			print ('returning value :'+ str(row[column]))
 			return str(row[column])
 
 @db_connector
@@ -80,14 +80,14 @@ def readAll(conn, table, column, item):
 def delete(conn, table, column, item, column2, item2):
 	cursor = conn.cursor()
 	query_string = "DELETE FROM "+ table+" WHERE "+column+" = '"+str(item)+"'"+ " AND "+column2+" = "+str(item2)
-	print query_string
+	print (query_string)
 	cursor.execute(query_string, item)
 	conn.commit()
 
 @db_connector
 def hasItem(conn, item1, item2, table, column1, column2):
 	query_string = "SELECT * FROM "+table+" WHERE "+ column1+ " = '"+item1+"'"+" AND "+ column2+ " = "+str(item2)
-	print query_string
+	print (query_string)
 	df = pd.read_sql_query(query_string, conn)
 	if df.size > 0:
 		return True
