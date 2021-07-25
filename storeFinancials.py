@@ -72,7 +72,7 @@ def main():
 				row_data = ["--"] * 7
 				row_data[0] = str(row['symbol'])
 				row_data[1] = str(row['industry'])
-				row_data[2] = str(item['date'])[0:4]
+				row_data[2] = utils.getActualYear(str(item['date']), str(item['period']))
 				row_data[3] = str(item['period'])
 				#row_data[4] = str(row['price'])
 				row_data[4] = str(item['revenue'])
@@ -110,7 +110,7 @@ def main():
 				row_data = ["--"] * 7
 				row_data[0] = str(row['symbol'])
 				row_data[1] = str(row['industry'])
-				row_data[2] = str(item['date'])[0:4]
+				row_data[2] = utils.getActualYear(str(item['date']), str(item['period']))
 				row_data[3] = str(item['period'])
 				#row_data[4] = str(row['price'])
 				#row_data[4] = str(item['revenue'])

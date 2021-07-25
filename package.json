@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "description": "Node app for increasing the number of Instagram followers by unfollowing and following popular accounts periodically.",
   "engines": {
-	"Python": "3.8.3"
+	"Python": "2.7.13"
   },
-  "main": "getPortfolio.py",
+  "main": "MovingAverage.py",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "python getPortfolio.py"
+    "start": "python MovingAverage.py"
   },
   "repository": {
     "type": "git",

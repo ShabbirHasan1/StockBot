@@ -311,4 +311,4 @@ def getActualYear(date,period):
 	monthNum = str(item['date'])[5:2]
 	print(monthNum)
 	if monthNum > 9 and period == 'Q1':
-		return year+1
+		return str(year+1)
