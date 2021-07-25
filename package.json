@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Node app for increasing the number of Instagram followers by unfollowing and following popular accounts periodically.",
   "engines": {
-	"Python": "2.7.13"
+	"Python": "3.8.3"
   },
   "main": "getPortfolio.py",
   "scripts": {

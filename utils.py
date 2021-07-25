@@ -131,11 +131,11 @@ def getAverage(data, days):
 #defining Q2 (jan-mar) 2020 as the starting point	
 def absoluteQuarter(year, period):
 	num = (year - 2020)*4
-	if period == 'Q2':
+	if period == 'Q1':
 		num = num + 1
-	if period == 'Q3':
+	if period == 'Q2':
 		num = num + 2
-	if period == 'Q4':
+	if period == 'Q3':
 		num = num + 3
 	else:
 		num = num + 4
@@ -303,3 +303,12 @@ def checkcircuit(symbol, type):
 			return False
 		else:
 			return True
+			
+#scenarios where Q1 result is dated in dec
+def getActualYear(date,period):
+	print(date)
+	year = str(item['date'])[0:4]
+	monthNum = str(item['date'])[5:2]
+	print(monthNum)
+	if monthNum > 9 and period == 'Q1':
+		return year+1
