@@ -306,9 +306,20 @@ def checkcircuit(symbol, type):
 			
 #scenarios where Q1 result is dated in dec
 def getActualYear(date,period):
-	print(date)
-	year = str(item['date'])[0:4]
-	monthNum = str(item['date'])[5:2]
-	print(monthNum)
-	if monthNum > 9 and period == 'Q1':
-		return str(year+1)
+	#print(date)
+	year = date[0:4]
+	monthNum = date[5:7]
+	#print(monthNum)
+	if int(monthNum) > 9 and period == 'Q1':
+		return str(int(year)+1)
+	
+	if int(monthNum) < 6 and period == 'Q4':
+		return str(int(year)-1)
+		
+	if int(monthNum) < 3 and period == 'Q2':
+		return str(int(year)-1)
+	
+	if int(monthNum) < 3 and period == 'Q3':
+		return str(int(year)-1)
+	
+	return str(year)
