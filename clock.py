@@ -7,6 +7,7 @@ import logging
 import Median
 import ScoreBuyStocks
 import storeFinancials
+import storeFinancialsGrowth
 #import generate_token
 #import holdings
 #import history
@@ -49,10 +50,15 @@ sched = BlockingScheduler()
 # #	generate_token.main()
 # #	print 'This job is run every weekday at 20:45.'
 
-@sched.scheduled_job('cron', day_of_week='mon-sun', hour=17, minute=55)
+@sched.scheduled_job('cron', day_of_week='mon-sun', hour=18, minute=30)
 def scheduled_job5():
 	storeFinancials.main()
-	print 'This job is run every weekday at 01:55.'
+	print 'This job is run every weekday at 02:30.'
+	
+@sched.scheduled_job('cron', day_of_week='mon-sun', hour=19, minute=30)
+def scheduled_job5():
+	storeFinancialsGrowth.main()
+	print 'This job is run every weekday at 03:30.'
 	
 	
 @sched.scheduled_job('cron', day_of_week='mon-sun', hour=12, minute=00)

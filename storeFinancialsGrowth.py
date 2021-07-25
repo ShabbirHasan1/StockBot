@@ -60,11 +60,12 @@ def main():
 	wbHeaders = ['symbol', 'Industry', 'date', 'period', 'price', 'revenue','netIncome','revenueGrowth','netIncomeGrowth', 'eps','epsgrowth']
 	rows = ["--"]*100
 	counter = 0
-	for num, row in df.iterrows():
 
-		#print 'entering 1'
+	for num, row in df.iterrows():
+		rows = ["--"]*100
+		counter = 0
 		try:
-			url = ("https://financialmodelingprep.com/api/v3/income-statement/"+str(row['symbol'])+"?apikey=5d8baa00babcbd4081944f3ea6b14c71&period=quarter")
+			url = ("https://financialmodelingprep.com/api/v3/financial-growth/"+str(row['symbol'])+"?apikey=5d8baa00babcbd4081944f3ea6b14c71&period=quarter")
 			incomeData = get_jsonparsed_data(url)
 			
 			
@@ -76,12 +77,12 @@ def main():
 				row_data[2] = utils.getActualYear(str(item['date']), str(item['period']))
 				row_data[3] = str(item['period'])
 				#row_data[4] = str(row['price'])
-				row_data[4] = str(item['revenue'])
-				row_data[5] = str(item['netIncome'])
-				#row_data[7] = str(item['revenueGrowth'])
-				#row_data[8] = str(item['netIncomeGrowth'])
-				row_data[6] = str(item['eps'])
-				#row_data[10] = str(item['epsgrowth'])
+				#row_data[4] = str(item['revenue'])
+				#row_data[5] = str(item['netIncome'])
+				row_data[4] = str(item['revenueGrowth'])
+				row_data[5] = str(item['netIncomeGrowth'])
+				#row_data[6] = str(item['eps'])
+				row_data[6] = str(item['epsgrowth'])
 				
 				if int(row_data[2]) < 2020:
 					continue
@@ -92,9 +93,10 @@ def main():
 					counter = counter + 1
 						
 					if counter == 100:
-						dbconnect5.upsert_many("`income`", rows)
+						dbconnect5.upsert_many("`incomegrowth`", rows)
 						counter = 0
-					#dbconnect5.insertsingle("`income`", row_data)
+						
+					#dbconnect5.insertsingle("`incomegrowth`", row_data)
 					#time.sleep(3)
 				except Exception as e:
 					if e.errno == 1062:
@@ -102,15 +104,15 @@ def main():
 					else:
 						print (e)
 						time.sleep(3700)
-						dbconnect5.upsert_many("`income`", rows)
+						#dbconnect5.insertsingle("`incomegrowth`", row_data)
+						dbconnect5.upsert_many("`incomegrowth`", rows)
 						counter = 0
-						#dbconnect5.insertsingle("`income`", row_data)
 				#ws.append(row_data)
 		except Exception as e:
 			print (e)
-		
-	dbconnect5.upsert_many("`income`", rows)
-	dbconnect5.delete("`income`", "symbol", "--")
+	dbconnect5.upsert_many("`incomegrowth`", rows)
+	dbconnect5.delete("`incomegrowth`", "symbol", "--")
+		#wb.save("Financials.xlsx")
 		
 if __name__ == "__main__":
     main()
