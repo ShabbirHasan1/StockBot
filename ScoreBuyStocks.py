@@ -35,7 +35,9 @@ shareRatiodf = pd.concat([shareRatiodf1, shareRatiodf2])
 #shareRatiodf = dbconnect.read("`TABLE 2`")
 #shareFinancialdf = utils.readExcel('Financials.xlsx')
 shareFinancialdf = dbconnect5.read("`income`")
+#print('income')
 shareFinancialGrowthdf = dbconnect5.read("`incomegrowth`")
+#print('incomegrowth`')
 
 #PATdf = utils.readExcel('Net Profit Margin(%).xlsx')
 PATdf = dbconnect_new.read('`netProfitMarginTTM`')
@@ -140,29 +142,31 @@ def getGrowthScore(share, financial):
 	prevShareFinancial=0
 	score = 0.0
 	month = 'Q2'
-	for index, row in shareFinancialGrowthdf.iterrows():
-		if row['symbol'] == share:
-			if (utils.absoluteQuarter(int(row['date']), str(row['period'])) > utils.absoluteQuarter(year, month)):
-				try:
-					shareFinancial = float(row[getGrowthMap(financial)])
-					year = int(row['date'])
-					month = str(row['period'])
-					#monthNum = utils.monthToNum(row['period'])
-				except Exception as e:
-					continue
 	
+	shareGrowthdf = shareFinancialGrowthdf.loc[shareFinancialGrowthdf['symbol'] == share]
+	for index, row in shareGrowthdf.iterrows():
+		#if row['symbol'] == share:
+		if (utils.absoluteQuarter(int(row['date']), str(row['period'])) > utils.absoluteQuarter(year, month)):
+			try:
+				shareFinancial = float(row[getGrowthMap(financial)])
+				year = int(row['date'])
+				month = str(row['period'])
+				#monthNum = utils.monthToNum(row['period'])
+			except Exception as e:
+				print(e)
+				continue
 	
 	return getDeltaScore(shareFinancial)						
 	
 	
 def getEPS(share, year, monthNum):
-	for index, row in shareFinancialdf.iterrows():
-		if row['symbol'] == share:
-			if int(row['date']) == year and utils.monthToNum(row['period']) == monthNum:
-				try:
-					return float(row['eps'])
-				except Exception as e:
-					return 0
+	shareFdf = shareFinancialdf.loc[shareFinancialdf['symbol'] == share]
+	for index, row in shareFdf.iterrows():
+		if int(row['date']) == year and utils.monthToNum(row['period']) == monthNum:
+			try:
+				return float(row['eps'])
+			except Exception as e:
+				return 0
 	return 0
 	
 def getQuarterScore(share):
@@ -186,22 +190,25 @@ def getValue(share, industry, ratio, ratioColumn):
 	score = 0.0
 	month = 'Q2'
 	global counter
-	for index, row in shareRatiodf.iterrows():
-		if row['symbol'] == share:
-			if (utils.absoluteQuarter(int(row['date']), str(row['period'])) > utils.absoluteQuarter(year, month)):
-				try:
-					shareMedian = float(row[ratioColumn])
-					year = int(row['date'])
-					month = str(row['period'])
-					#monthNum = utils.monthToNum(row['period'])
-					counter = counter + 1
-				except Exception as e:
-					print(e)
-					continue
+	
+	sharedf = shareRatiodf.loc[shareRatiodf['symbol'] == share]
+	for index, row in sharedf.iterrows():
+		#if row['symbol'] == share:
+		if (utils.absoluteQuarter(int(row['date']), str(row['period'])) > utils.absoluteQuarter(year, month)):
+			try:
+				shareMedian = float(row[ratioColumn])
+				year = int(row['date'])
+				month = str(row['period'])
+				#monthNum = utils.monthToNum(row['period'])
+				counter = counter + 1
+			except Exception as e:
+				print(e)
+				continue
 	
 	for index, row in getdfMap(ratio).iterrows():
 		if (str(row['industry']) == industry) and (int(row['date']) == year) and (row['period'] == month):
 			industryMedian = float(row[ratio])
+	
 	
 	#print ('Share median  '+str(shareMedian)+ ' Industry median : ' + str(industryMedian))
 	adjustedScore = getAdjustedScore(shareMedian, industryMedian)		
@@ -231,17 +238,20 @@ def getPEScore(share, currentPrice, industry):
 	industryMedian = 0
 	score = 0.0
 	month = 'Q2'
-	for index, row in shareRatiodf.iterrows():
-		if row['symbol'] == share:
-			if (utils.absoluteQuarter(int(row['date']), str(row['period'])) > utils.absoluteQuarter(year, month)):
-				try:
-					pe =float(row['priceEarningsRatioTTM']) 
-					year = int(row['date'])
-					month = str(row['period'])
-					#monthNum = utils.monthToNum(row['period'])
-				except Exception as e:
-					print (e)
-					continue
+	
+	
+	sharedf = shareRatiodf.loc[shareRatiodf['symbol'] == share]
+	for index, row in sharedf.iterrows():
+		#if row['symbol'] == share:
+		if (utils.absoluteQuarter(int(row['date']), str(row['period'])) > utils.absoluteQuarter(year, month)):
+			try:
+				shareMedian = float(row['priceEarningsRatioTTM'])
+				year = int(row['date'])
+				month = str(row['period'])
+				#monthNum = utils.monthToNum(row['period'])
+			except Exception as e:
+				print(e)
+				continue
 				
 	for index, row in getdfMap('priceEarningsRatioTTM').iterrows():
 		if (str(row['industry']) == industry) and (int(row['date']) == year) and (row['period'] == month):
@@ -315,8 +325,8 @@ def main():
 			print (str(e)+' '+str(row['symbol']))
 			
 	
-	rows = ["--"]*100
-	counter = 0
+	#rows = ["--"]*100
+	#counter = 0
 	#iterate every stock
 	for index, row in df.iterrows():
 		try:
@@ -362,8 +372,8 @@ def main():
 			row_data[9] = str(date.today().strftime('%d %b %Y'))
 			#ws.append(row_data)
 			try:
-				rows[counter] = row_data
-				counter = counter + 1
+				#rows[counter] = row_data
+				#counter = counter + 1
 						
 				#if counter == 100:
 				#	dbconnect_new.upsert_many("Scores", rows)
