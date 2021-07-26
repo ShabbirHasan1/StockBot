@@ -128,6 +128,14 @@ def getAverage(data, days):
 			count = count + 1;
 	return sum/count
 	
+#return average of value of the number of days specified
+def getAverageNew(data, days):
+	sum = 0.0
+	for row in data:
+		sum = sum + float(row.get('close'))
+		
+	return sum/days	
+	
 #defining Q2 (jan-mar) 2020 as the starting point	
 def absoluteQuarter(year, period):
 	num = (year - 2020)*4

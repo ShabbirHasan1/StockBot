@@ -23,6 +23,8 @@ import dbconnect3
 import dbconnect4
 import dbconnect5
 import time
+import thread
+
 #read list of all stock
 ratioFiles = ['netProfitMarginTTM','returnOnCapitalEmployedTTM','returnOnAssetsTTM','returnOnEquityTTM', 'debtEquityRatioTTM','priceEarningsRatioTTM','dividendYieldTTM']
 ratioColumn = ['netProfitMarginTTM','returnOnCapitalEmployedTTM','returnOnAssetsTTM','returnOnEquityTTM', 'debtEquityRatioTTM','priceEarningsRatioTTM','dividendYieldTTM']
@@ -260,15 +262,31 @@ def getPEScore(share, currentPrice, industry):
 	return -1.0 * getAdjustedScore(pe, industryMedian)
 	
 
-def getTrendScore(data):
+def getTrendScore(symbol):
 	try:
-		avg200 = utils.getAverage(data['historical'], 200)
-		avg50 = utils.getAverage(data['historical'], 50)
+		#avg200 = utils.getAverage(data['historical'], 200)
+		#avg50 = utils.getAverage(data['historical'], 50)
 		#currentPrice = float(data['graph']['current_close'])
+		
+		url = "https://financialmodelingprep.com/api/v3/technical_indicator/daily/"+symbol+"?period=50&type=sma&apikey=5d8baa00babcbd4081944f3ea6b14c71"
+		#data = get_jsonparsed_data(url)
+		#avg200 = utils.getAverageNew(data, 200)
+		#url = ("https://financialmodelingprep.com/api/v3/historical-price-full/"+symbol+"?timeseries=50&apikey=5d8baa00babcbd4081944f3ea6b14c71")
+		#data = get_jsonparsed_data(url)
+		#avg50 = utils.getAverageNew(data, 50)
+		avg50 = float((get_jsonparsed_data(url)[0]).get('sma'))
+		url = "https://financialmodelingprep.com/api/v3/technical_indicator/daily/"+symbol+"?period=200&type=sma&apikey=5d8baa00babcbd4081944f3ea6b14c71"
+		avg200 = float((get_jsonparsed_data(url)[0]).get('sma'))
+		print(symbol + ' '+ str(avg50)+ ' ' + str(avg200))
 		
 		return getAdjustedScore(avg50, avg200)
 	except Exception as e:
 		return 0
+		
+def trendScoring(name, symbol):
+	trendScore = getTrendScore(symbol) * TRENDWEIGHT * 2
+	trendMap.add(symbol, trendScore)
+	print('done')
 
 def main():
 	
@@ -283,7 +301,7 @@ def main():
 	positiveList = my_dictionary()
 	count = 0.0
 	#totalStock = 60.0
-	totalStock = 6500.0
+	totalStock = 2*(df.size)
 	#wb = load_workbook("Scores.xlsx")
 	#wbHeaders = ['Share', 'sector', 'Trend', 'Average', 'Median', 'PE', 'News', 'Quarter', 'Total']
 	#wb.remove(wb.worksheets[0])
@@ -291,6 +309,10 @@ def main():
 	#ws = wb.worksheets[0]
 
 	#ws.append(wbHeaders)
+	threadLock = threading.Lock()
+	threads = []
+	
+	
 	#iterate every stock
 	for index, row in df.iterrows():
 		try:
@@ -301,30 +323,38 @@ def main():
 			#url = 'https://appfeeds.moneycontrol.com//jsonapi//stocks//graph&format=json&range=max&type=area&ex=&sc_id='+str(row['id'])
 			#rcomp = requests.get(url, headers=headers)
 			#data = json.loads(rcomp.text)
+			#url = ("https://financialmodelingprep.com/api/v3/historical-price-full/"+str(row['symbol'])+"?serietype=line&apikey=5d8baa00babcbd4081944f3ea6b14c71")
+			#data = get_jsonparsed_data(url)
 			
-			url = ("https://financialmodelingprep.com/api/v3/historical-price-full/"+str(row['symbol'])+"?serietype=line&apikey=5d8baa00babcbd4081944f3ea6b14c71")
-			data = get_jsonparsed_data(url)
-			
-			
-			trendScore = getTrendScore(data) * TRENDWEIGHT * 2
-			trendMap.add(str(row['symbol']), trendScore)
+			#trendScore = getTrendScore(data) * TRENDWEIGHT * 2
+			th = thread.start_new_thread( trendScoring, ("threadname", str(row['symbol'])))
+			th.start()
+			threads.append(th)
 			priceMap.add(str(row['symbol']), row['price'])
+			
 			#stockData.add(str(row['id']), data)
 			currentPrice = float(row['price'])
 			prevPrice = currentPrice - float(row['changes'])
 			change  = currentPrice/prevPrice
 			countList = utils.upsert(countList, str(row['industry']))
+			
 			averageList = utils.upsertAverage(averageList, str(row['industry']), change, countList[str(row['industry'])])
+			
 			if currentPrice > prevPrice:
 				positiveList = utils.upsertAverage(positiveList, str(row['industry']), 1, countList[str(row['industry'])])
 			else:
 				positiveList = utils.upsertAverage(positiveList, str(row['industry']), 0, countList[str(row['industry'])])
+			
+			
 			#if count == 5:
 			#	break
 		except Exception as e:
 			print (str(e)+' '+str(row['symbol']))
 			
 	
+	for t in threads:
+		t.join()
+	print ("Exiting Main Thread")
 	#rows = ["--"]*100
 	#counter = 0
 	#iterate every stock
@@ -379,6 +409,7 @@ def main():
 				#	dbconnect_new.upsert_many("Scores", rows)
 				#	counter = 0
 				dbconnect_new.upsert("Scores", row_data)
+				time.sleep(1)
 			except Exception as e:
 				print (e)
 				time.sleep(3700)
