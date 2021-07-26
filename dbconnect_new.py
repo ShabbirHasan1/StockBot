@@ -43,6 +43,20 @@ def upsert(conn, table, items):
 	print (query_string)
 	cursor.executemany(query_string, items)
 	conn.commit()
+
+@db_connector_new
+def upsert_many(conn, table, items):
+	cursor = conn.cursor()
+	#var_string = ', '.join('?' * len(items))
+	#query_string = 'REPLACE INTO '+ table+ ' VALUES (%s);' % var_string
+	query_string = "REPLACE INTO "+ table+" VALUES %s;" % (tuple(items),)
+	query_string= query_string.replace('[','(').replace(']',')')
+	query_string = query_string.replace("((", "(")
+	query_string = query_string.replace("))", ")")
+	#query_string = query_string.strip('()')
+	print (query_string)
+	cursor.execute(query_string)
+	conn.commit()
 	
 @db_connector_new
 def read(conn, table):

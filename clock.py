@@ -50,26 +50,26 @@ sched = BlockingScheduler()
 # #	generate_token.main()
 # #	print 'This job is run every weekday at 20:45.'
 
-@sched.scheduled_job('cron', day_of_week='mon-sun', hour=18, minute=30)
+@sched.scheduled_job('cron', day_of_week='mon-sun', hour=2, minute=50)
 def scheduled_job5():
 	storeFinancials.main()
-	print 'This job is run every weekday at 02:30.'
+	print 'This job is run every weekday at 10:50.'
 	
-@sched.scheduled_job('cron', day_of_week='mon-sun', hour=19, minute=30)
+@sched.scheduled_job('cron', day_of_week='mon-sun', hour=3, minute=05)
 def scheduled_job5():
 	storeFinancialsGrowth.main()
-	print 'This job is run every weekday at 03:30.'
+	print 'This job is run every weekday at 11:05.'
 	
 	
-@sched.scheduled_job('cron', day_of_week='mon-sun', hour=12, minute=00)
+@sched.scheduled_job('cron', day_of_week='mon-sun', hour=3, minute=20)
 def scheduled_job4():
 	Median.main()
-	print 'This job is run every weekday at 20:00.'
+	print 'This job is run every weekday at 11:20.'
 	
-@sched.scheduled_job('cron', day_of_week='mon-sun', hour=22, minute=00)
+@sched.scheduled_job('cron', day_of_week='mon-sun', hour=5, minute=55)
 def scheduled_job2():
 	ScoreBuyStocks.main()
-	print 'This job is run every weekday at 06:00.'
+	print 'This job is run every weekday at 13:55.'
 
 # @sched.scheduled_job('cron', day_of_week='mon-fri', hour=6, minute=00)
 # def scheduled_job():

@@ -51,7 +51,7 @@ def main():
 	print ('Storing ratios')
 	
 	try:
-		df = dbconnect.read('stock')
+		df = dbconnect.readWhere('stock', 'exchangeShortName', "('NYSE','NASDAQ')")
 	except Exception as e:
 		time.sleep(3700)
 		df = dbconnect.read('stock')
@@ -62,8 +62,6 @@ def main():
 	counter = 0
 
 	for num, row in df.iterrows():
-		rows = ["--"]*100
-		counter = 0
 		try:
 			url = ("https://financialmodelingprep.com/api/v3/financial-growth/"+str(row['symbol'])+"?apikey=5d8baa00babcbd4081944f3ea6b14c71&period=quarter")
 			incomeData = get_jsonparsed_data(url)

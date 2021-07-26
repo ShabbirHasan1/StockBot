@@ -267,13 +267,13 @@ def main():
 	print ('Running stock scoring')
 	#read list of all stock
 	#df = utils.readExcel('stock-unique-dummy.xlsx')
-	df = dbconnect.read('stock')
+	df = dbconnect.readWhere('stock', 'exchangeShortName', "('NYSE','NASDAQ')")
 	averageList = my_dictionary()
 	countList = my_dictionary()
 	positiveList = my_dictionary()
 	count = 0.0
 	#totalStock = 60.0
-	totalStock = 3750.0
+	totalStock = 6500.0
 	#wb = load_workbook("Scores.xlsx")
 	#wbHeaders = ['Share', 'sector', 'Trend', 'Average', 'Median', 'PE', 'News', 'Quarter', 'Total']
 	#wb.remove(wb.worksheets[0])
@@ -314,7 +314,9 @@ def main():
 		except Exception as e:
 			print (str(e)+' '+str(row['symbol']))
 			
-		
+	
+	rows = ["--"]*100
+	counter = 0
 	#iterate every stock
 	for index, row in df.iterrows():
 		try:
@@ -360,20 +362,29 @@ def main():
 			row_data[9] = str(date.today().strftime('%d %b %Y'))
 			#ws.append(row_data)
 			try:
+				rows[counter] = row_data
+				counter = counter + 1
+						
+				#if counter == 100:
+				#	dbconnect_new.upsert_many("Scores", rows)
+				#	counter = 0
 				dbconnect_new.upsert("Scores", row_data)
 			except Exception as e:
 				print (e)
 				time.sleep(3700)
 				print ('sleeping')
+				#dbconnect_new.upsert_many("Scores", rows)
+				#counter = 0
 				dbconnect_new.upsert("Scores", row_data)
-			print ('Trendscore: '+str(trendScore)+ '| Industry score: '+str(industryScore)+'| Median Score '+str(medianScore)+ '|PE Score '+str(peScore)+'|News Score '+str(newsScore)+'|Quarter score '+str(quarterScore)+'| Total '+str(total))
+			#print ('Trendscore: '+str(trendScore)+ '| Industry score: '+str(industryScore)+'| Median Score '+str(medianScore)+ '|PE Score '+str(peScore)+'|News Score '+str(newsScore)+'|Quarter score '+str(quarterScore)+'| Total '+str(total))
 			
 			buyList.add(str(row['symbol']), total)
 		except Exception as e:
 			print (e)
 			continue
 	
-	
+	#dbconnect_new.upsert_many("Scores", rows)
+	#dbconnect_new.delete("Scores", "symbol", "--")
 	#find top buy list
 	topBuyList = dict(Counter(buyList).most_common(5))
 	#utils.saveToFile(topBuyList, 'buy.txt')

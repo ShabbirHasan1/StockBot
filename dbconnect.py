@@ -54,6 +54,14 @@ def read(conn, table):
 	return df
 
 @db_connector
+def readWhere(conn, table, column, condition):
+	query_string = "SELECT * FROM "+ table + " WHERE "+column+" in "+condition
+	df = pd.read_sql_query(query_string, conn)
+	print(query_string)
+	#print(df)
+	return df
+
+@db_connector
 def readItemWhere(conn, table, column, id):
 	df = read(table)
 	for index, row in df.iterrows():

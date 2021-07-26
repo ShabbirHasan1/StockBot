@@ -51,10 +51,10 @@ def main():
 	print ('Storing ratios')
 	
 	try:
-		df = dbconnect.read('stock')
+		df = dbconnect.readWhere('stock', 'exchangeShortName', "('NYSE','NASDAQ')")
 	except Exception as e:
 		time.sleep(3700)
-		df = dbconnect.read('stock')
+		df = dbconnect.readWhere('stock', 'exchangeShortName', "('NYSE','NASDAQ')")
 	
 	#wb = load_workbook("Ratios.xlsx")
 	wbHeaders = ['symbol', 'Industry', 'date', 'period', 'price', 'revenue','netIncome','revenueGrowth','netIncomeGrowth', 'eps','epsgrowth']
