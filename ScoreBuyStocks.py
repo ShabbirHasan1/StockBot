@@ -23,7 +23,12 @@ import dbconnect3
 import dbconnect4
 import dbconnect5
 import time
-import thread
+import sys
+import threading
+#if sys.version_info > (2, 7):
+#	import _thread
+#else:
+#	import thread
 
 #read list of all stock
 ratioFiles = ['netProfitMarginTTM','returnOnCapitalEmployedTTM','returnOnAssetsTTM','returnOnEquityTTM', 'debtEquityRatioTTM','priceEarningsRatioTTM','dividendYieldTTM']
@@ -70,6 +75,20 @@ NEWSWEIGHT = 0.1
 QUARTERWEIGHT = 0.2
 
 counter = 0
+threadLock = threading.Lock()
+threads = []
+
+class myThread (threading.Thread):
+	def __init__(self, symbol):
+		threading.Thread.__init__(self)
+		self.symbol = symbol
+		
+	def run(self):
+		# Get lock to synchronize threads
+		#threadLock.acquire()
+		trendScoring(self.symbol)
+		# Free lock to release next thread
+		#threadLock.release()
 
 try:
     # For Python 3.0 and later
@@ -281,12 +300,14 @@ def getTrendScore(symbol):
 		
 		return getAdjustedScore(avg50, avg200)
 	except Exception as e:
+		print(e)
 		return 0
 		
-def trendScoring(name, symbol):
+def trendScoring(symbol):
 	trendScore = getTrendScore(symbol) * TRENDWEIGHT * 2
+	threadLock.acquire()
 	trendMap.add(symbol, trendScore)
-	print('done')
+	threadLock.release()
 
 def main():
 	
@@ -301,7 +322,7 @@ def main():
 	positiveList = my_dictionary()
 	count = 0.0
 	#totalStock = 60.0
-	totalStock = 2*(df.size)
+	totalStock = 2*len(df)
 	#wb = load_workbook("Scores.xlsx")
 	#wbHeaders = ['Share', 'sector', 'Trend', 'Average', 'Median', 'PE', 'News', 'Quarter', 'Total']
 	#wb.remove(wb.worksheets[0])
@@ -309,8 +330,6 @@ def main():
 	#ws = wb.worksheets[0]
 
 	#ws.append(wbHeaders)
-	threadLock = threading.Lock()
-	threads = []
 	
 	
 	#iterate every stock
@@ -327,7 +346,7 @@ def main():
 			#data = get_jsonparsed_data(url)
 			
 			#trendScore = getTrendScore(data) * TRENDWEIGHT * 2
-			th = thread.start_new_thread( trendScoring, ("threadname", str(row['symbol'])))
+			th = myThread(str(row['symbol']))
 			th.start()
 			threads.append(th)
 			priceMap.add(str(row['symbol']), row['price'])
@@ -355,8 +374,9 @@ def main():
 	for t in threads:
 		t.join()
 	print ("Exiting Main Thread")
-	#rows = ["--"]*100
-	#counter = 0
+	time.sleep(30)
+	rows = ["--"]*100
+	counter = 0
 	#iterate every stock
 	for index, row in df.iterrows():
 		try:
@@ -402,21 +422,21 @@ def main():
 			row_data[9] = str(date.today().strftime('%d %b %Y'))
 			#ws.append(row_data)
 			try:
-				#rows[counter] = row_data
-				#counter = counter + 1
+				rows[counter] = row_data
+				counter = counter + 1
 						
-				#if counter == 100:
-				#	dbconnect_new.upsert_many("Scores", rows)
-				#	counter = 0
-				dbconnect_new.upsert("Scores", row_data)
-				time.sleep(1)
+				if counter == 100:
+					dbconnect_new.upsert_many("Scores", rows)
+					counter = 0
+				#dbconnect_new.upsert("Scores", row_data)
+				#time.sleep(1)
 			except Exception as e:
 				print (e)
 				time.sleep(3700)
 				print ('sleeping')
-				#dbconnect_new.upsert_many("Scores", rows)
-				#counter = 0
-				dbconnect_new.upsert("Scores", row_data)
+				dbconnect_new.upsert_many("Scores", rows)
+				counter = 0
+				#dbconnect_new.upsert("Scores", row_data)
 			#print ('Trendscore: '+str(trendScore)+ '| Industry score: '+str(industryScore)+'| Median Score '+str(medianScore)+ '|PE Score '+str(peScore)+'|News Score '+str(newsScore)+'|Quarter score '+str(quarterScore)+'| Total '+str(total))
 			
 			buyList.add(str(row['symbol']), total)
@@ -424,8 +444,8 @@ def main():
 			print (e)
 			continue
 	
-	#dbconnect_new.upsert_many("Scores", rows)
-	#dbconnect_new.delete("Scores", "symbol", "--")
+	dbconnect_new.upsert_many("Scores", rows)
+	dbconnect_new.delete("Scores", "symbol", "--")
 	#find top buy list
 	topBuyList = dict(Counter(buyList).most_common(5))
 	#utils.saveToFile(topBuyList, 'buy.txt')
