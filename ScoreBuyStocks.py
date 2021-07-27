@@ -25,6 +25,7 @@ import dbconnect5
 import time
 import sys
 import threading
+
 #if sys.version_info > (2, 7):
 #	import _thread
 #else:
@@ -78,15 +79,22 @@ counter = 0
 threadLock = threading.Lock()
 threads = []
 
+
+threadLimiter = threading.BoundedSemaphore(100)
+
 class myThread (threading.Thread):
 	def __init__(self, symbol):
 		threading.Thread.__init__(self)
 		self.symbol = symbol
 		
 	def run(self):
+		threadLimiter.acquire()
 		# Get lock to synchronize threads
 		#threadLock.acquire()
-		trendScoring(self.symbol)
+		try:
+			trendScoring(self.symbol)
+		finally:
+			threadLimiter.release()
 		# Free lock to release next thread
 		#threadLock.release()
 
@@ -288,11 +296,6 @@ def getTrendScore(symbol):
 		#currentPrice = float(data['graph']['current_close'])
 		
 		url = "https://financialmodelingprep.com/api/v3/technical_indicator/daily/"+symbol+"?period=50&type=sma&apikey=5d8baa00babcbd4081944f3ea6b14c71"
-		#data = get_jsonparsed_data(url)
-		#avg200 = utils.getAverageNew(data, 200)
-		#url = ("https://financialmodelingprep.com/api/v3/historical-price-full/"+symbol+"?timeseries=50&apikey=5d8baa00babcbd4081944f3ea6b14c71")
-		#data = get_jsonparsed_data(url)
-		#avg50 = utils.getAverageNew(data, 50)
 		avg50 = float((get_jsonparsed_data(url)[0]).get('sma'))
 		url = "https://financialmodelingprep.com/api/v3/technical_indicator/daily/"+symbol+"?period=200&type=sma&apikey=5d8baa00babcbd4081944f3ea6b14c71"
 		avg200 = float((get_jsonparsed_data(url)[0]).get('sma'))
@@ -301,12 +304,22 @@ def getTrendScore(symbol):
 		return getAdjustedScore(avg50, avg200)
 	except Exception as e:
 		print(e)
-		return 0
+		try:
+			url = "https://financialmodelingprep.com/api/v3/technical_indicator/daily/"+symbol+"?period=50&type=sma&apikey=5d8baa00babcbd4081944f3ea6b14c71"
+			avg50 = float((get_jsonparsed_data(url)[0]).get('sma'))
+			url = "https://financialmodelingprep.com/api/v3/technical_indicator/daily/"+symbol+"?period=200&type=sma&apikey=5d8baa00babcbd4081944f3ea6b14c71"
+			avg200 = float((get_jsonparsed_data(url)[0]).get('sma'))
+			print(symbol + ' '+ str(avg50)+ ' ' + str(avg200))		
+			return getAdjustedScore(avg50, avg200)
+		except Exception as e:
+			print(e)
+			return 0
 		
 def trendScoring(symbol):
 	trendScore = getTrendScore(symbol) * TRENDWEIGHT * 2
 	threadLock.acquire()
 	trendMap.add(symbol, trendScore)
+	time.sleep(1)
 	threadLock.release()
 
 def main():
@@ -314,23 +327,12 @@ def main():
 	headers = {'authorization': "Basic API Key Ommitted", 'accept': "application/json", 'accept': "text/csv"}
 
 	print ('Running stock scoring')
-	#read list of all stock
-	#df = utils.readExcel('stock-unique-dummy.xlsx')
 	df = dbconnect.readWhere('stock', 'exchangeShortName', "('NYSE','NASDAQ')")
 	averageList = my_dictionary()
 	countList = my_dictionary()
 	positiveList = my_dictionary()
 	count = 0.0
-	#totalStock = 60.0
 	totalStock = 2*len(df)
-	#wb = load_workbook("Scores.xlsx")
-	#wbHeaders = ['Share', 'sector', 'Trend', 'Average', 'Median', 'PE', 'News', 'Quarter', 'Total']
-	#wb.remove(wb.worksheets[0])
-	#wb.create_sheet('Scores', 0)
-	#ws = wb.worksheets[0]
-
-	#ws.append(wbHeaders)
-	
 	
 	#iterate every stock
 	for index, row in df.iterrows():
@@ -338,14 +340,7 @@ def main():
 			#utils.drawProgressBar(count/totalStock, 50)
 			utils.loadingBar(count, totalStock, 10)
 			count = count + 1
-			#runtime calculate change average and percentage of stocks on the rise
-			#url = 'https://appfeeds.moneycontrol.com//jsonapi//stocks//graph&format=json&range=max&type=area&ex=&sc_id='+str(row['id'])
-			#rcomp = requests.get(url, headers=headers)
-			#data = json.loads(rcomp.text)
-			#url = ("https://financialmodelingprep.com/api/v3/historical-price-full/"+str(row['symbol'])+"?serietype=line&apikey=5d8baa00babcbd4081944f3ea6b14c71")
-			#data = get_jsonparsed_data(url)
 			
-			#trendScore = getTrendScore(data) * TRENDWEIGHT * 2
 			th = myThread(str(row['symbol']))
 			th.start()
 			threads.append(th)
