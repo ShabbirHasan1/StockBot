@@ -328,48 +328,28 @@ def main():
 
 	print ('Running stock scoring')
 	df = dbconnect.readWhere('stock', 'exchangeShortName', "('NYSE','NASDAQ')")
-	averageList = my_dictionary()
-	countList = my_dictionary()
-	positiveList = my_dictionary()
+	
 	count = 0.0
-	totalStock = 2*len(df)
+	totalStock = len(df)
 	
 	#iterate every stock
-	for index, row in df.iterrows():
-		try:
+	#for index, row in df.iterrows():
+	#	try:
 			#utils.drawProgressBar(count/totalStock, 50)
-			utils.loadingBar(count, totalStock, 10)
-			count = count + 1
 			
-			th = myThread(str(row['symbol']))
-			th.start()
-			threads.append(th)
-			priceMap.add(str(row['symbol']), row['price'])
 			
-			#stockData.add(str(row['id']), data)
-			currentPrice = float(row['price'])
-			prevPrice = currentPrice - float(row['changes'])
-			change  = currentPrice/prevPrice
-			countList = utils.upsert(countList, str(row['industry']))
-			
-			averageList = utils.upsertAverage(averageList, str(row['industry']), change, countList[str(row['industry'])])
-			
-			if currentPrice > prevPrice:
-				positiveList = utils.upsertAverage(positiveList, str(row['industry']), 1, countList[str(row['industry'])])
-			else:
-				positiveList = utils.upsertAverage(positiveList, str(row['industry']), 0, countList[str(row['industry'])])
 			
 			
 			#if count == 5:
 			#	break
-		except Exception as e:
-			print (str(e)+' '+str(row['symbol']))
+	#	except Exception as e:
+	#		print (str(e)+' '+str(row['symbol']))
 			
 	
-	for t in threads:
-		t.join()
-	print ("Exiting Main Thread")
-	time.sleep(30)
+	#for t in threads:
+	#	t.join()
+	#print ("Exiting Main Thread")
+	#time.sleep(30)
 	rows = ["--"]*100
 	counter = 0
 	#iterate every stock
@@ -378,18 +358,25 @@ def main():
 			#utils.drawProgressBar(count/totalStock, 50)
 			utils.loadingBar(count, totalStock, 10)
 			count = count + 1
-			currentPrice = priceMap[str(row['symbol'])]
+			
+			
+			#th = myThread(str(row['symbol']))
+			#th.start()
+			#threads.append(th)
+			
+			currentPrice = row['price']
 			row_data = [None] * 10
 			row_data[0] = str(row['symbol'])
 			row_data[1] = str(row['industry'])
 			
 			#give trend score
-			trendScore = trendMap[str(row['symbol'])]
+			trendScore = getTrendScore(str(row['symbol']))
 			row_data[2] = str(trendScore)
 			#print ('trend score is '+ str(trendScore))
 			
 			#give industry change score
-			industryScore = getAdjustedScore(averageList[str(row['industry'])], 1.0) * IAVGWEIGHT * 10
+			#industryScore = getAdjustedScore(averageList[str(row['industry'])], 1.0) * IAVGWEIGHT * 10
+			industryScore = 0
 			row_data[3] = str(industryScore)
 			#print ('industryScore is '+ str(industryScore))
 			
