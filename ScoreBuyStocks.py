@@ -370,7 +370,7 @@ def main():
 			row_data[1] = str(row['industry'])
 			
 			#give trend score
-			trendScore = getTrendScore(str(row['symbol']))
+			trendScore = getTrendScore(str(row['symbol'])) * TRENDWEIGHT * 2
 			row_data[2] = str(trendScore)
 			#print ('trend score is '+ str(trendScore))
 			
@@ -427,7 +427,7 @@ def main():
 			continue
 	
 	dbconnect_new.upsert_many("Scores", rows)
-	dbconnect_new.delete("Scores", "symbol", "--")
+	dbconnect_new.delete("Scores", "`name`", "--")
 	#find top buy list
 	topBuyList = dict(Counter(buyList).most_common(5))
 	#utils.saveToFile(topBuyList, 'buy.txt')
