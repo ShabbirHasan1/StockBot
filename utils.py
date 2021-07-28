@@ -64,7 +64,7 @@ def sendSMS(message, itemList):
 
 	#adding the new shares to be bought
 	for item in itemList:
-		SMS = SMS + getNSESymbol(item) + ','
+		SMS = SMS + str(item) + ','
 			
 	notify = Notify()
 	notify.send(SMS)
