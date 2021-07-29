@@ -1,15 +1,15 @@
 from apscheduler.schedulers.blocking import BlockingScheduler
 #import MovingAverage
 import os
-import logging
+#import logging
 #import sell
 #import buy
-import Median
-import ScoreBuyStocks
-import storeFinancials
-import storeFinancialsGrowth
+#import Median
+#import ScoreBuyStocks
+#import storeFinancials
+#import storeFinancialsGrowth
 #import generate_token
-#import holdings
+import holdings
 #import history
 logging.basicConfig()
 
@@ -24,10 +24,10 @@ sched = BlockingScheduler()
 #	sell.main()
 #	print 'This job is run every weekday at 10:25 am.'
 
-# @sched.scheduled_job('interval', minutes=59)
-# def timed_job():
-	# holdings.main()
-	# print('This job is run every sixty minutes.')
+@sched.scheduled_job('interval', minutes=59)
+def timed_job():
+	holdings.main()
+	print('This job is run every sixty minutes.')
 
 # @sched.scheduled_job('interval', minutes=10)
 # def timed_job():
@@ -50,31 +50,11 @@ sched = BlockingScheduler()
 # #	generate_token.main()
 # #	print 'This job is run every weekday at 20:45.'
 
-@sched.scheduled_job('cron', day_of_week='mon-sun', hour=2, minute=00)
-def scheduled_job5():
-	storeFinancials.main()
-	print 'This job is run every weekday at 10:00.'
-	
-@sched.scheduled_job('cron', day_of_week='mon-sun', hour=2, minute=30)
-def scheduled_job5():
-	storeFinancialsGrowth.main()
-	print 'This job is run every weekday at 10:30.'
-	
-	
-@sched.scheduled_job('cron', day_of_week='mon-sun', hour=3, minute=00)
-def scheduled_job4():
-	Median.main()
-	print 'This job is run every weekday at 11:00.'
-	
-@sched.scheduled_job('cron', day_of_week='mon-sun', hour=3, minute=15)
-def scheduled_job2():
-	ScoreBuyStocks.main()
-	print 'This job is run every weekday at 11:15.'
 
 # @sched.scheduled_job('cron', day_of_week='mon-fri', hour=6, minute=00)
 # def scheduled_job():
 	# buy.main()
 	# print('This job is run every weekday at 14:00 PM')
 
-print 'Job is running now'
+print ('Job is running now')
 sched.start()
