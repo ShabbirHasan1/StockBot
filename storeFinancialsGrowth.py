@@ -58,7 +58,8 @@ def main():
 	
 	#wb = load_workbook("Ratios.xlsx")
 	wbHeaders = ['symbol', 'Industry', 'date', 'period', 'price', 'revenue','netIncome','revenueGrowth','netIncomeGrowth', 'eps','epsgrowth']
-	rows = ["--"]*100
+	#rows = ["--"]*100
+	rows = []
 	counter = 0
 
 	for num, row in df.iterrows():
@@ -88,6 +89,7 @@ def main():
 				# Append Row Values
 				try:
 					rows[counter] = row_data
+					rows.append(row_data)
 					counter = counter + 1
 						
 					if counter == 100:
@@ -109,7 +111,7 @@ def main():
 		except Exception as e:
 			print (e)
 	dbconnect5.upsert_many("`incomegrowth`", rows)
-	dbconnect5.delete("`incomegrowth`", "symbol", "--")
+	#dbconnect5.delete("`incomegrowth`", "symbol", "--")
 		#wb.save("Financials.xlsx")
 		
 if __name__ == "__main__":

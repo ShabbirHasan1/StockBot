@@ -318,10 +318,10 @@ def getActualYear(date,period):
 	year = date[0:4]
 	monthNum = date[5:7]
 	#print(monthNum)
-	if int(monthNum) > 9 and period == 'Q1':
+	if int(monthNum) > 11 and period == 'Q1':
 		return str(int(year)+1)
 	
-	if int(monthNum) < 6 and period == 'Q4':
+	if int(monthNum) < 9 and period == 'Q4':
 		return str(int(year)-1)
 		
 	if int(monthNum) < 3 and period == 'Q2':

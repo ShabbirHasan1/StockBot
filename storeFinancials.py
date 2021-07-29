@@ -51,14 +51,15 @@ def main():
 	print ('Storing ratios')
 	
 	try:
-		df = dbconnect.readWhere('stock', 'exchangeShortName', "('NYSE','NASDAQ')")
+		df = dbconnect.readWhere('stock', 'symbol', "('MSFT')")
 	except Exception as e:
 		time.sleep(3700)
 		df = dbconnect.readWhere('stock', 'exchangeShortName', "('NYSE','NASDAQ')")
 	
 	#wb = load_workbook("Ratios.xlsx")
 	wbHeaders = ['symbol', 'Industry', 'date', 'period', 'price', 'revenue','netIncome','revenueGrowth','netIncomeGrowth', 'eps','epsgrowth']
-	rows = ["--"]*100
+	#rows = ["--"]*100
+	rows = []
 	counter = 0
 	for num, row in df.iterrows():
 
@@ -88,7 +89,8 @@ def main():
 			
 				# Append Row Values
 				try:
-					rows[counter] = row_data
+					#rows[counter] = row_data
+					rows.append(row_data)
 					counter = counter + 1
 						
 					if counter == 100:
@@ -110,7 +112,7 @@ def main():
 			print (e)
 		
 	dbconnect5.upsert_many("`income`", rows)
-	dbconnect5.delete("`income`", "symbol", "--")
+	#dbconnect5.delete("`income`", "symbol", "--")
 		
 if __name__ == "__main__":
     main()

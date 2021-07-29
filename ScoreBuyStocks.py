@@ -350,7 +350,8 @@ def main():
 	#	t.join()
 	#print ("Exiting Main Thread")
 	#time.sleep(30)
-	rows = ["--"]*100
+	#rows = ["--"]*100
+	rows = []
 	counter = 0
 	#iterate every stock
 	for index, row in df.iterrows():
@@ -404,7 +405,8 @@ def main():
 			row_data[9] = str(date.today().strftime('%d %b %Y'))
 			#ws.append(row_data)
 			try:
-				rows[counter] = row_data
+				#rows[counter] = row_data
+				rows.append(row_data)
 				counter = counter + 1
 						
 				if counter == 100:
@@ -427,7 +429,7 @@ def main():
 			continue
 	
 	dbconnect_new.upsert_many("Scores", rows)
-	dbconnect_new.delete("Scores", "`name`", "--")
+	#dbconnect_new.delete("Scores", "`name`", "--")
 	#find top buy list
 	topBuyList = dict(Counter(buyList).most_common(5))
 	#utils.saveToFile(topBuyList, 'buy.txt')
