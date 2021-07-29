@@ -25,6 +25,10 @@ from nsetools import Nse
 
 def getNSESymbol(stock):
 	return dbconnect.readItemWhere('stock', 'nseid', stock)
+	
+def getStockName(stock):
+	return dbconnect.readItemWhere('stock', '`name`', stock)
+
 
 def loadingBar(count,total,size):
 	percent = float(count)/float(total)*100
@@ -64,7 +68,7 @@ def sendSMS(message, itemList):
 
 	#adding the new shares to be bought
 	for item in itemList:
-		SMS = SMS + str(item) + ','
+		SMS = SMS + getStockName(str(item)) + ','
 			
 	notify = Notify()
 	notify.send(SMS)

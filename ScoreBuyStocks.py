@@ -327,7 +327,7 @@ def main():
 	headers = {'authorization': "Basic API Key Ommitted", 'accept': "application/json", 'accept': "text/csv"}
 
 	print ('Running stock scoring')
-	df = dbconnect.readWhere('stock', 'exchangeShortName', "('NYSE','NASDAQ')")
+	df = dbconnect.readWhere2('stock', 'exchangeShortName', "('NYSE','NASDAQ')")
 	
 	count = 0.0
 	totalStock = len(df)
@@ -368,7 +368,7 @@ def main():
 			currentPrice = row['price']
 			row_data = [None] * 10
 			row_data[0] = str(row['symbol'])
-			row_data[1] = str(row['industry'])
+			row_data[1] = str(row['industry'].encode('ascii','ignore'))
 			
 			#give trend score
 			trendScore = getTrendScore(str(row['symbol'])) * TRENDWEIGHT * 2
@@ -382,7 +382,7 @@ def main():
 			#print ('industryScore is '+ str(industryScore))
 			
 			#give ratio median score
-			medianScore = getMedianScore(str(row['symbol']), str(row['industry'])) * MEDIANWEIGHT
+			medianScore = getMedianScore(str(row['symbol']), str(row['industry'].encode('ascii','ignore'))) * MEDIANWEIGHT
 			row_data[4] = str(medianScore)
 			#print ('medianScore is '+ str(medianScore))
 	
@@ -390,7 +390,7 @@ def main():
 			row_data[7] = str(quarterScore)
 			#print ('quarterScore is '+ str(quarterScore))
 			
-			peScore = getPEScore(str(row['symbol']), currentPrice, str(row['industry']))*PERATIOWEIGHT
+			peScore = getPEScore(str(row['symbol']), currentPrice, str(row['industry'].encode('ascii','ignore')))*PERATIOWEIGHT
 			row_data[5] = str(peScore)
 			#print ('peScore is '+ str(peScore))
 			
@@ -412,6 +412,7 @@ def main():
 				if counter == 100:
 					dbconnect_new.upsert_many("Scores", rows)
 					counter = 0
+					rows = []
 				#dbconnect_new.upsert("Scores", row_data)
 				#time.sleep(1)
 			except Exception as e:
@@ -420,6 +421,7 @@ def main():
 				print ('sleeping')
 				dbconnect_new.upsert_many("Scores", rows)
 				counter = 0
+				rows = []
 				#dbconnect_new.upsert("Scores", row_data)
 			#print ('Trendscore: '+str(trendScore)+ '| Industry score: '+str(industryScore)+'| Median Score '+str(medianScore)+ '|PE Score '+str(peScore)+'|News Score '+str(newsScore)+'|Quarter score '+str(quarterScore)+'| Total '+str(total))
 			

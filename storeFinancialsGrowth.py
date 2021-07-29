@@ -48,13 +48,13 @@ def get_jsonparsed_data(url):
     return json.loads(data)
 
 def main():
-	print ('Storing ratios')
+	print ('Storing growth financials')
 	
 	try:
-		df = dbconnect.readWhere('stock', 'exchangeShortName', "('NYSE','NASDAQ')")
+		df = dbconnect.readWhere2('stock', 'exchangeShortName', "('NYSE','NASDAQ')")
 	except Exception as e:
 		time.sleep(3700)
-		df = dbconnect.read('stock')
+		df = dbconnect.readWhere2('stock', 'exchangeShortName', "('NYSE','NASDAQ')")
 	
 	#wb = load_workbook("Ratios.xlsx")
 	wbHeaders = ['symbol', 'Industry', 'date', 'period', 'price', 'revenue','netIncome','revenueGrowth','netIncomeGrowth', 'eps','epsgrowth']
@@ -64,15 +64,16 @@ def main():
 
 	for num, row in df.iterrows():
 		try:
-			url = ("https://financialmodelingprep.com/api/v3/financial-growth/"+str(row['symbol'])+"?apikey=5d8baa00babcbd4081944f3ea6b14c71&period=quarter")
+			url = ("https://financialmodelingprep.com/api/v3/financial-growth/"+str(row['symbol'])+"?apikey=5d8baa00babcbd4081944f3ea6b14c71&period=quarter&limit=8")
 			incomeData = get_jsonparsed_data(url)
+			print(str(row['symbol']))
 			
 			
 			for item in incomeData:
 				#print(item)
 				row_data = ["--"] * 7
 				row_data[0] = str(row['symbol'])
-				row_data[1] = str(row['industry'])
+				row_data[1] = str(row['industry'].encode('ascii','ignore'))
 				row_data[2] = utils.getActualYear(str(item['date']), str(item['period']))
 				row_data[3] = str(item['period'])
 				#row_data[4] = str(row['price'])
@@ -83,33 +84,30 @@ def main():
 				#row_data[6] = str(item['eps'])
 				row_data[6] = str(item['epsgrowth'])
 				
-				if int(row_data[2]) < 2020:
-					continue
 			
 				# Append Row Values
 				try:
-					rows[counter] = row_data
 					rows.append(row_data)
 					counter = counter + 1
 						
 					if counter == 100:
 						dbconnect5.upsert_many("`incomegrowth`", rows)
 						counter = 0
+						rows = []
+						time.sleep(3)
 						
 					#dbconnect5.insertsingle("`incomegrowth`", row_data)
 					#time.sleep(3)
 				except Exception as e:
-					if e.errno == 1062:
-						continue
-					else:
-						print (e)
-						time.sleep(3700)
-						#dbconnect5.insertsingle("`incomegrowth`", row_data)
-						dbconnect5.upsert_many("`incomegrowth`", rows)
-						counter = 0
+					print (e)
+					time.sleep(4)
+					#dbconnect5.insertsingle("`incomegrowth`", row_data)
+					dbconnect5.upsert_many("`incomegrowth`", rows)
+					counter = 0
 				#ws.append(row_data)
 		except Exception as e:
 			print (e)
+			time.sleep(3)
 	dbconnect5.upsert_many("`incomegrowth`", rows)
 	#dbconnect5.delete("`incomegrowth`", "symbol", "--")
 		#wb.save("Financials.xlsx")

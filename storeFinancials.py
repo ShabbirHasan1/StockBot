@@ -48,13 +48,14 @@ def get_jsonparsed_data(url):
     return json.loads(data)
 
 def main():
-	print ('Storing ratios')
+	print ('Storing financials')
 	
 	try:
-		df = dbconnect.readWhere('stock', 'symbol', "('MSFT')")
+		df = dbconnect.readWhere2('stock', 'exchangeShortName',  "('NYSE','NASDAQ')")
+		#df = dbconnect.readWhere('stock', 'symbol',  "('MSFT')")
 	except Exception as e:
 		time.sleep(3700)
-		df = dbconnect.readWhere('stock', 'exchangeShortName', "('NYSE','NASDAQ')")
+		df = dbconnect.readWhere2('stock', 'exchangeShortName', "('NYSE','NASDAQ')")
 	
 	#wb = load_workbook("Ratios.xlsx")
 	wbHeaders = ['symbol', 'Industry', 'date', 'period', 'price', 'revenue','netIncome','revenueGrowth','netIncomeGrowth', 'eps','epsgrowth']
@@ -65,15 +66,15 @@ def main():
 
 		#print 'entering 1'
 		try:
-			url = ("https://financialmodelingprep.com/api/v3/income-statement/"+str(row['symbol'])+"?apikey=5d8baa00babcbd4081944f3ea6b14c71&period=quarter")
+			url = ("https://financialmodelingprep.com/api/v3/income-statement/"+str(row['symbol'])+"?apikey=5d8baa00babcbd4081944f3ea6b14c71&period=quarter&limit=8")
 			incomeData = get_jsonparsed_data(url)
-			
+			print(str(row['symbol']))
 			
 			for item in incomeData:
 				#print(item)
 				row_data = ["--"] * 7
 				row_data[0] = str(row['symbol'])
-				row_data[1] = str(row['industry'])
+				row_data[1] = str(row['industry'].encode('ascii','ignore'))
 				row_data[2] = utils.getActualYear(str(item['date']), str(item['period']))
 				row_data[3] = str(item['period'])
 				#row_data[4] = str(row['price'])
@@ -83,9 +84,6 @@ def main():
 				#row_data[8] = str(item['netIncomeGrowth'])
 				row_data[6] = str(item['eps'])
 				#row_data[10] = str(item['epsgrowth'])
-				
-				if int(row_data[2]) < 2020:
-					continue
 			
 				# Append Row Values
 				try:
@@ -96,20 +94,21 @@ def main():
 					if counter == 100:
 						dbconnect5.upsert_many("`income`", rows)
 						counter = 0
+						rows = []
+						time.sleep(3)
 					#dbconnect5.insertsingle("`income`", row_data)
 					#time.sleep(3)
 				except Exception as e:
-					if e.errno == 1062:
-						continue
-					else:
-						print (e)
-						time.sleep(3700)
-						dbconnect5.upsert_many("`income`", rows)
-						counter = 0
-						#dbconnect5.insertsingle("`income`", row_data)
+					print (e)
+					time.sleep(4)
+					dbconnect5.upsert_many("`income`", rows)
+					counter = 0
+					rows = []
+					#dbconnect5.insertsingle("`income`", row_data)
 				#ws.append(row_data)
 		except Exception as e:
 			print (e)
+			time.sleep(3)
 		
 	dbconnect5.upsert_many("`income`", rows)
 	#dbconnect5.delete("`income`", "symbol", "--")
