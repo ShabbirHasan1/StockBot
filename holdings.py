@@ -1,5 +1,5 @@
 from futu import *
-trd_ctx = OpenUSTradeContext(host='127.0.0.1', port=11111, security_firm=SecurityFirm.FUTUSG)
+trd_ctx = OpenUSTradeContext(host='0.0.0.0', port=11111, security_firm=SecurityFirm.FUTUSG)
 ret, data = trd_ctx.accinfo_query()
 if ret == RET_OK:
     print(data)

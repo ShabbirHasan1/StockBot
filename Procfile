@@ -1,2 +1,2 @@
 clock: python clock.py
-web: bin/./FutuOpenD
+web: node ./app.js

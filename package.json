@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "description": "Node app for increasing the number of Instagram followers by unfollowing and following popular accounts periodically.",
   "engines": {
-	"Python": "2.7.13"
+    "Python": "2.7.13"
   },
-  "main": "MovingAverage.py",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "python MovingAverage.py"
+    "start": "app.js"
   },
   "repository": {
     "type": "git",
@@ -18,5 +18,10 @@
   "bugs": {
     "url": "https://github.com/sukrit1990/StockBot/issues"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "homepage": "https://github.com/sukrit1990/StockBot#readme",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
